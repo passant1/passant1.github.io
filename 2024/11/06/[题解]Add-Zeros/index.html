@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
+  <link rel="mask-icon" href="/images/%E7%B1%B3%E9%A5%ADsmall.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"passant1.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言刷cf的时候学到很多的一道题，倒不是说这个题出的多好，只是我跟着这个题的题解学到了很多c++新标准的语法之类的内容。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Add Zeros题解">
+<meta property="og:url" content="https://passant1.top/2024/11/06/[%E9%A2%98%E8%A7%A3]Add-Zeros/index.html">
+<meta property="og:site_name" content="路人乙の小窝">
+<meta property="og:description" content="前言刷cf的时候学到很多的一道题，倒不是说这个题出的多好，只是我跟着这个题的题解学到了很多c++新标准的语法之类的内容。">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-11-05T16:25:45.000Z">
+<meta property="article:modified_time" content="2024-11-05T17:14:33.734Z">
+<meta property="article:author" content="路人乙">
+<meta property="article:tag" content="c++">
+<meta property="article:tag" content="lambda">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://passant1.top/2024/11/06/[%E9%A2%98%E8%A7%A3]Add-Zeros/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Add Zeros题解 | 路人乙の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">路人乙の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我若安好，万事大吉</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://passant1.top/2024/11/06/[%E9%A2%98%E8%A7%A3]Add-Zeros/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="路人乙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="路人乙の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Add Zeros题解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2024-11-06 00:25:45 / 修改时间：01:14:33" itemprop="dateCreated datePublished" datetime="2024-11-06T00:25:45+08:00">2024-11-06</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index"><span itemprop="name">study</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E9%A2%98%E8%A7%A3/" itemprop="url" rel="index"><span itemprop="name">题解</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>刷cf的时候学到很多的一道题，倒不是说这个题出的多好，只是我跟着这个题的题解学到了很多c++新标准的语法之类的内容。</p>
+<span id="more"></span>
+<h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>You’re given an array a initially containing nn integers. In one operation, you must do the following:</p>
+<ul>
+<li>Choose a position <script type="math/tex">i</script> such that <code>1&lt;i≤|a|</code> and <code>a_i=|a|+1−i</code>, where <strong>|a|</strong> is the <strong>current</strong> size of the array.</li>
+<li>Append <code>i−1</code> zeros onto the end of a.</li>
+</ul>
+<p>After performing this operation as many times as you want, what is the maximum possible length of the array $a$?</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这个题的思路其实不是很难，只是题目本身有点绕，实际上只要根据题意建图后跑dfs就好，不过有很多细节需要处理。</p>
+<p>注意<code>`a_i</code>的数量级为1e14</p>
+<h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>虽然跟着std精简了很多我的代码，可是结果还是很丑，不如在std的基础上补充细节：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> ll = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cin.<span class="built_in">tie</span>(<span class="number">0</span>)-&gt;<span class="built_in">sync_with_stdio</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="type">int</span> t;</span><br><span class="line">  cin &gt;&gt; t;</span><br><span class="line">  <span class="keyword">while</span> (t--) &#123;</span><br><span class="line">        <span class="type">int</span> n;</span><br><span class="line">        cin &gt;&gt; n;</span><br><span class="line">        <span class="function">vector&lt;ll&gt; <span class="title">A</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) cin &gt;&gt; A[i];</span><br><span class="line">        map&lt;ll,vector&lt;ll&gt;&gt; adj;	<span class="comment">// 使用vector不方便建图（第一维太大，1e14）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;n; i++) &#123;</span><br><span class="line">            ll u = A[i] + i;</span><br><span class="line">            ll v = u + i;</span><br><span class="line">            adj[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">        set&lt;ll&gt; vis;	<span class="comment">// 不能使用bool数组，因为未离散化的数组下标很大</span></span><br><span class="line">        function&lt;<span class="type">void</span>(ll)&gt; dfs = [&amp;](ll u) -&gt; <span class="type">void</span> &#123;	<span class="comment">// lambda函数</span></span><br><span class="line">            <span class="keyword">if</span> (vis.<span class="built_in">count</span>(u)) <span class="keyword">return</span>;</span><br><span class="line">            vis.<span class="built_in">insert</span>(u);</span><br><span class="line">            <span class="keyword">for</span> (ll v : adj[u]) <span class="built_in">dfs</span>(v);</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">dfs</span>(n);</span><br><span class="line">        cout &lt;&lt; *vis.<span class="built_in">rbegin</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;	<span class="comment">// 使用*rbegin()找到set末尾元素，也就是可以访问到的最大长度</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h2><p>其实这东西对我来说并不算陌生，我在python和matlab中偶尔会用到这东西，在c++也阅读过jiangly大佬的代码。我很喜欢这种简洁清晰的表达方式，不过从未在c++中编写过带lambda函数的程序。</p>
+<h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[capture](parameter_list) -&gt; return_type &#123; body &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><code>capture</code>: 捕获外部变量的方式，可以通过值捕获、引用捕获等。</p>
+</li>
+<li><p><code>parameter_list</code>: 参数列表，和普通函数一样，可以为空或包含多个参数。</p>
+</li>
+<li><p><code>return_type</code>: 返回类型，可以省略，编译器会自动推断。</p>
+</li>
+<li><p><code>body</code>: 表达式体，函数的实现部分。</p>
+</li>
+</ul>
+<h3 id="捕获外部变量"><a href="#捕获外部变量" class="headerlink" title="捕获外部变量"></a>捕获外部变量</h3><ul>
+<li><p><code>[ ]</code> 不捕获任何变量。</p>
+</li>
+<li><p><code>[x]</code> 按值捕获变量<code>x</code>。</p>
+</li>
+<li><p><code>[&amp;]</code> 按引用捕获所有外部变量。</p>
+</li>
+<li><p><code>[=]</code> 按值捕获所有外部变量。</p>
+</li>
+<li><p><code>[this]</code> 捕获当前对象的指针，允许在lambda中访问成员变量和成员函数。</p>
+</li>
+</ul>
+<p>这个题中若是使用<code>[]</code>则不能在dfs函数中访问<code>vis</code>，如果用<code>[=]</code>则不能对<code>vis</code>产生实际修改。</p>
+<h3 id="返回类型"><a href="#返回类型" class="headerlink" title="返回类型"></a>返回类型</h3><p>可以不填，编译器会进行推导。</p>
+<h3 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h3><p>lambda函数不能直接调用自己，不过可以通过其他方式实现递归</p>
+<ol>
+<li><code>std::function&lt;void(ll)&gt;</code></li>
+<li>c++14<code>auto&amp;&amp; self</code>实现自引用</li>
+</ol>
+<p>对于第一个方法，std中的dfs就是用这种方式实现递归，其中void(ll)为函数类型，即返回值为空，参数类型为ll。</p>
+<p>对于第二种方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> dfs = [&amp;](<span class="keyword">auto</span> &amp;&amp;self, <span class="type">long</span> <span class="type">long</span> u) -&gt; <span class="type">void</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(vis.<span class="built_in">count</span>(u)) <span class="keyword">return</span>; </span><br><span class="line">    vis.<span class="built_in">insert</span>(u);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> v : adj[u]) <span class="built_in">self</span>(self, v);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">dfs</span>(dfs, n);</span><br></pre></td></tr></table></figure>
+<p>这段代码通过<code>auto&amp;&amp; self</code>实现了自引用，每次调用函数需要额外添加<code>self</code>参数。</p>
+<blockquote>
+<p>ChatGPT-4o:</p>
+<p><strong>性能差异</strong>：自引用递归 <code>lambda</code> 通常比 <code>std::function</code> 递归更高效，因为它避免了类型擦除、内存分配和间接调用的开销。</p>
+<p><strong>灵活性</strong>：<code>std::function</code> 提供更高的灵活性，因为它可以封装任何符合签名的可调用对象（包括函数、lambda 和函数对象），而自引用递归 <code>lambda</code> 更适用于递归的场景。</p>
+</blockquote>
+<h2 id="搭配stl"><a href="#搭配stl" class="headerlink" title="搭配stl"></a>搭配stl</h2><p>其实与这个题目无关，不过经常使用<code>sort</code>定义cmp函数时可以在函数内写lambda表达式：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sort</span>(arr.<span class="built_in">begin</span>(), arr.<span class="built_in">end</span>(), [](<span class="type">const</span> Node &amp;a, <span class="type">const</span> Node &amp;b) &#123;</span><br><span class="line">    <span class="keyword">return</span> a.id &lt; b.id;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>除了sort，其他很多stl库中的函数也可以用lambda表达式来精简参数，使代码更简洁好看。</p>
+<h2 id="STL使用"><a href="#STL使用" class="headerlink" title="STL使用"></a>STL使用</h2><p>我从初中开始打noip时就非常热爱stl，对现成的函数和数据结构爱不释手。</p>
+<p>但是有的时候阅读这些题解才发现我对stl的使用并不优雅，至少打眼一看，代码里全是固定MAXN大小的数组。</p>
+<p>这道题可以看出的可以借鉴的stl写法：</p>
+<ul>
+<li>使用vector代替数组</li>
+<li>使用set代替bool数组 / 哈希（毕竟可以用stl谁愿意手搓呢）</li>
+<li><p>使用map解决下标范围广的存图问题</p>
+</li>
+<li><p>使用<code>*rbegin()</code>而不是额外定义变量获取最大值</p>
+</li>
+</ul>
+<p>STL的用法想先鸽一下，等之后在专门写博客整理汇总。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>我很可爱，请给我钱qwq</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.png" alt="路人乙 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="路人乙 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/c/" rel="tag"># c++</a>
+              <a href="/tags/lambda/" rel="tag"># lambda</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2024/10/12/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/" rel="prev" title="拓扑排序">
+      <i class="fa fa-chevron-left"></i> 拓扑排序
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%98%E7%9B%AE%E6%8F%8F%E8%BF%B0"><span class="nav-number">2.</span> <span class="nav-text">题目描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%9D%E8%B7%AF"><span class="nav-number">3.</span> <span class="nav-text">思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">代码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#lambda%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">5.</span> <span class="nav-text">lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F"><span class="nav-number">5.1.</span> <span class="nav-text">格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8D%95%E8%8E%B7%E5%A4%96%E9%83%A8%E5%8F%98%E9%87%8F"><span class="nav-number">5.2.</span> <span class="nav-text">捕获外部变量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E7%B1%BB%E5%9E%8B"><span class="nav-number">5.3.</span> <span class="nav-text">返回类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%92%E5%BD%92"><span class="nav-number">5.4.</span> <span class="nav-text">递归</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%AD%E9%85%8Dstl"><span class="nav-number">6.</span> <span class="nav-text">搭配stl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#STL%E4%BD%BF%E7%94%A8"><span class="nav-number">7.</span> <span class="nav-text">STL使用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="路人乙"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">路人乙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">7</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">11</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/passant1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;passant1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:passerby_1@outlook.com" title="E-Mail → mailto:passerby_1@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2048373239&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;2048373239&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.luogu.com.cn/user/144779" title="luogu → https:&#x2F;&#x2F;www.luogu.com.cn&#x2F;user&#x2F;144779" rel="noopener" target="_blank"><i class="fa fa-code fa-fw"></i>luogu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2024</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">路人乙</span>
+</div>
+  <div class="powered-by">
+   <!--由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动 -->
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script color='0,0,0' opacity='0.9' zIndex='-1' count='199' src="//cdn.jsdelivr.net/gh/theme-next/theme-next-canvas-nest@1/canvas-nest-nomobile.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+</body>
+</html>
