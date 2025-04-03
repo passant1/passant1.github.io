@@ -28,7 +28,7 @@
 <meta property="og:description" content="前言对我来说很难的一道题。看20分钟后没有思路去看了题解但是没看明白，自己想到了二分的假做法（最后发现是错的），找到错误后开始理解题解思路，最后AC掉的一道题。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2025-04-03T08:29:29.000Z">
-<meta property="article:modified_time" content="2025-04-03T09:01:02.966Z">
+<meta property="article:modified_time" content="2025-04-03T09:04:02.114Z">
 <meta property="article:author" content="路人乙">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="codeforces">
@@ -196,7 +196,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-04-03 16:29:29 / 修改时间：17:01:02" itemprop="dateCreated datePublished" datetime="2025-04-03T16:29:29+08:00">2025-04-03</time>
+              <time title="创建时间：2025-04-03 16:29:29 / 修改时间：17:04:02" itemprop="dateCreated datePublished" datetime="2025-04-03T16:29:29+08:00">2025-04-03</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -224,7 +224,7 @@
 <span id="more"></span>
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>有两个数组a和b，每次对a和b进行连续的2个操作：</p>
 <ul>
-<li>对每个合法的$i$，将 $a[i]$ 和 $b[i]$ 减少$min{a[i], b[i]}$</li>
+<li>对每个合法的$i$，将 $a[i]$ 和 $b[i]$ 减少$min(a[i], b[i])$</li>
 <li>将$a$逆时针移动 $a[i] = a[(i + n - 1) \ \%\  n]$</li>
 </ul>
 <p>求多少次操作后a中所有元素都变为0。</p>
