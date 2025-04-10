@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 6.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
+  <link rel="mask-icon" href="/images/%E7%B1%B3%E9%A5%ADsmall.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"passant1.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"enable":false,"style":"tabs","active":false,"storage":true,"lazyload":false},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言我在去年十月份的博客写过这样一句话：  之前遇到好多题题解有拓扑排序+一堆其他图论算法，包括求强连通分量、缩点等，并不像我最近刷的模板题那么简单。所以我打算下一步去复习Tarjin算法，以防真遇到题发现自己只会一半（笑）。  于是我来复习了）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Tarjan算法">
+<meta property="og:url" content="https://passant1.top/2025/04/10/Tarjan%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="路人乙の小窝">
+<meta property="og:description" content="前言我在去年十月份的博客写过这样一句话：  之前遇到好多题题解有拓扑排序+一堆其他图论算法，包括求强连通分量、缩点等，并不像我最近刷的模板题那么简单。所以我打算下一步去复习Tarjin算法，以防真遇到题发现自己只会一半（笑）。  于是我来复习了）">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2025-04-10T13:36:50.000Z">
+<meta property="article:modified_time" content="2025-04-10T15:01:30.167Z">
+<meta property="article:author" content="路人乙">
+<meta property="article:tag" content="Tarjan">
+<meta property="article:tag" content="图论">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://passant1.top/2025/04/10/Tarjan%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Tarjan算法 | 路人乙の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">路人乙の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我若安好，万事大吉</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://passant1.top/2025/04/10/Tarjan%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="路人乙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="路人乙の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Tarjan算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-04-10 21:36:50 / 修改时间：23:01:30" itemprop="dateCreated datePublished" datetime="2025-04-10T21:36:50+08:00">2025-04-10</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index"><span itemprop="name">study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>我在去年<a href="https://passant1.top/2024/10/12/%E6%8B%93%E6%89%91%E6%8E%92%E5%BA%8F/#more">十月份的博客</a>写过这样一句话：</p>
+<blockquote>
+<p>之前遇到好多题题解有拓扑排序+一堆其他图论算法，包括求强连通分量、缩点等，并不像我最近刷的模板题那么简单。所以我打算下一步去复习Tarjin算法，以防真遇到题发现自己只会一半（笑）。</p>
+</blockquote>
+<p>于是我来复习了）</p>
+<hr>
+<span id="more"></span>
+<h2 id="Tarjan算法用途"><a href="#Tarjan算法用途" class="headerlink" title="Tarjan算法用途"></a>Tarjan算法用途</h2><ol>
+<li>求无向图割点、割边</li>
+<li>求有向图强连通分量、缩点得到DAG</li>
+<li><del>以后遇到再写</del></li>
+</ol>
+<h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><ol>
+<li><strong>dfs搜索树</strong>：根据dfs的性质，在无向连通图或有向图的强连通分量中应该会不重不漏的访问所有节点，根据搜索的顺序可以得到一颗生成树，记这颗树为dfs搜索树</li>
+<li><strong>dfs时间戳</strong>：在dfs的过程中根据访问的顺序为每个结点分配一个时间戳，记作dfn，显然每个结点的dfn是不一样的</li>
+<li><strong>树边</strong>：在dfs搜索树的n个结点只由n-1条边连接，这n-1条边均为树边</li>
+<li><strong>非树边</strong>：在原图中存在，但是在dfs搜索树中不存在的边</li>
+<li><strong>返祖边</strong>：根据dfs的性质，每一条非树边连接的两个边一定有子孙关系，记这两个结点为u、v，且在dfs搜素树中深度较大的点为v，那么<strong>LCA(u, v) = u </strong>一定成立，定义以每个结点为端点，连接这个端点与其祖先的边为返祖边。</li>
+</ol>
+<h3 id="一点点备注"><a href="#一点点备注" class="headerlink" title="一点点备注"></a>一点点备注</h3><ol>
+<li>根据存边的方式、dfs的方式等的变化，同一个图可能得到<strong>不同的</strong>dfs搜索树</li>
+<li>为什么LCA(u, v) = u一定成立？若u与v由一条非树边e连接，若v不为u的祖先，u总可以通过dfs向下访问到v，此时e为树边，与假设相反</li>
+</ol>
+<h2 id="LOW数组"><a href="#LOW数组" class="headerlink" title="LOW数组"></a>LOW数组</h2><p>考虑这样一个问题：如何求出一个无向联通图中所有的割点？</p>
+<ol>
+<li>我们将图退化为树，树中每一个度不小于2的结点都是割点</li>
+<li>在dfs搜索树中考虑：对于非根的结点u，如果其每一棵子树都存在结点v，使得结点v存在返祖边(v,f(u))，那么u一定不为割点（其中f(u)为u的祖先结点且f(u)不为u）</li>
+<li>反之，如果对于结点u，如果u存在子树，其中任意结点v都补存在返祖边(v,f(u))，那么u为割点</li>
+</ol>
+<p>那问题可以转化为判断结点u子树中是否有返祖边连接到u的祖先。</p>
+<p>记low[u]为<strong>u可回溯到的dfn最小的结点</strong>，以下为求low[u]的步骤：</p>
+<ol>
+<li>访问所有与u相连的结点v（原图中）</li>
+<li>如果v已经被访问过（dfn不为0），令<code>low[u] = min(low[u], dfn[v])</code></li>
+<li>否则，对v递归执行算法，令<code>low[u] = min(low[u], low[v])</code></li>
+<li>重复1-3</li>
+</ol>
+<h2 id="Tarjan求割点"><a href="#Tarjan求割点" class="headerlink" title="Tarjan求割点"></a>Tarjan求割点</h2><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3388">传送门</a></p>
+<p>在介绍low数组时，为了突出重点，我们没有考虑根节点。实际上，由于root不存在祖先节点f(root)，我们只需要考虑root的子树数量。如果子树数量&gt;=2，root也为割点。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">2e4</span> + <span class="number">7</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> M = <span class="number">1e5</span> + <span class="number">7</span>;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; G[N];</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; cuts;</span><br><span class="line"><span class="type">int</span> dfn[N], low[N], dn = <span class="number">0</span>;</span><br><span class="line"><span class="type">int</span> child = <span class="number">0</span>, root = <span class="number">1</span>;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> u)</span> </span>&#123;</span><br><span class="line">	dfn[u] = low[u] = ++dn;</span><br><span class="line">    <span class="type">bool</span> iscut = <span class="literal">false</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> v : G[u]) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!dfn[v]) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(v);</span><br><span class="line">            low[u] = <span class="built_in">min</span>(low[u], low[v]);</span><br><span class="line">			<span class="keyword">if</span>(u == root) child++;</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span>(low[v] &gt;= dfn[u]) iscut = <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">else</span> low[u] = <span class="built_in">min</span>(low[u], dfn[v]);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span>(iscut) cuts.<span class="built_in">push_back</span>(u);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>, u, v; i &lt;= m; ++i) &#123;</span><br><span class="line">		cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        G[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        G[v].<span class="built_in">push_back</span>(u);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!dfn[i]) &#123;</span><br><span class="line">            root = i;</span><br><span class="line">            child = <span class="number">0</span>;</span><br><span class="line">            <span class="built_in">tarjan</span>(root);</span><br><span class="line">            <span class="keyword">if</span>(child &gt;= <span class="number">2</span>) cuts.<span class="built_in">push_back</span>(root);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sort</span>(cuts.<span class="built_in">begin</span>(), cuts.<span class="built_in">end</span>());</span><br><span class="line">    cout &lt;&lt; cuts.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : cuts) cout &lt;&lt; i &lt;&lt; <span class="string">&quot; &quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Tarjan求有向图强连通分量"><a href="#Tarjan求有向图强连通分量" class="headerlink" title="Tarjan求有向图强连通分量"></a>Tarjan求有向图强连通分量</h2><p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/B3609">传送门</a></p>
+<p>我们以如下方式计算有向图的low数组：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="type">int</span> y : G[x]) &#123;</span><br><span class="line">    <span class="keyword">if</span>(!dfn[y]) &#123;</span><br><span class="line">        <span class="built_in">tarjan</span>(y);</span><br><span class="line">        low[x] = <span class="built_in">min</span>(low[x], low[y]);</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span>(instk[y]) &#123;</span><br><span class="line">        low[x] = <span class="built_in">min</span>(low[x], dfn[y]);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们用一个栈来保存结点，在对每个点执行tarjan时将其入栈，在tarjan执行完成后判断<code>dfn[x] == low[x]</code>，如果为真，则x是一个强连通分量的起点，否则不是。强连通分量中的结点为栈中从栈顶到x所有的结点。</p>
+<p>为什么？</p>
+<p>先证必要性：</p>
+<p>首先对于结点u，low[u]一定是不大于dfn[u]的。</p>
+<p>记结点u所在的强连通分量为SCC，如果low[u] &lt; dfn[u]，那么说明存在结点w为u的祖先节点在SCC中，所以从栈顶到u的元素不为完整的强连通分量。</p>
+<p>再证充分性：</p>
+<p>假设对于满足low[u] == dfn[u]的u，从栈顶到u中存在元素v不属于SCC：</p>
+<ol>
+<li>low[v] == dfn[v]，这说明v是另一个强连通分量的起点，应该会在tarjan(v)过后出栈，这与假设不符</li>
+<li>low[v] &lt; dfn[v]<ol>
+<li>low[v] &lt; dfn[u]: 此时low[u]应该被更新为更小的low[v]，与假设不符</li>
+<li>low[v] &gt;= dfn[u]: 此时v属于SCC，与假设不符</li>
+</ol>
+</li>
+</ol>
+<p>综上，算法的正确性得到证明。</p>
+<p>洛谷这道题需要在求出SCC后注意输出顺序</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1e4</span> + <span class="number">7</span>;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; G[N];</span><br><span class="line"><span class="type">int</span> fa[N];</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; ans[N];</span><br><span class="line"><span class="type">int</span> low[N], dfn[N], dn = <span class="number">0</span>, cnt = <span class="number">0</span>;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; s;</span><br><span class="line"><span class="type">bool</span> instk[N];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    low[x] = dfn[x] = ++dn;</span><br><span class="line">    instk[x] = <span class="literal">true</span>;</span><br><span class="line">    s.<span class="built_in">push</span>(x);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> y : G[x]) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!dfn[y]) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(y);</span><br><span class="line">            low[x] = <span class="built_in">min</span>(low[x], low[y]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(instk[y]) &#123;</span><br><span class="line">            low[x] = <span class="built_in">min</span>(low[x], dfn[y]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(dfn[x] == low[x]) &#123;</span><br><span class="line">        cnt++;</span><br><span class="line">        <span class="type">int</span> y;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            y = s.<span class="built_in">top</span>();    s.<span class="built_in">pop</span>();</span><br><span class="line">            instk[y] = <span class="literal">false</span>;</span><br><span class="line">            ans[x].<span class="built_in">push_back</span>(y);  </span><br><span class="line">            fa[y] = x;</span><br><span class="line">        &#125; <span class="keyword">while</span>(y != x);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    set&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; st;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> u, v, i = <span class="number">1</span>; i &lt;= m; ++i) &#123;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        <span class="keyword">if</span>(u != v &amp;&amp; st.<span class="built_in">find</span>(&#123;u, v&#125;) == st.<span class="built_in">end</span>()) &#123;</span><br><span class="line">            st.<span class="built_in">insert</span>(&#123;u, v&#125;);</span><br><span class="line">            G[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(dfn[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(i);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; cnt &lt;&lt; endl;</span><br><span class="line">    set&lt;<span class="type">int</span>&gt; st2;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!st2.<span class="built_in">count</span>(fa[i])) &#123;</span><br><span class="line">            <span class="built_in">sort</span>(ans[fa[i]].<span class="built_in">begin</span>(), ans[fa[i]].<span class="built_in">end</span>());</span><br><span class="line">            <span class="keyword">for</span>(<span class="type">int</span> j = <span class="number">0</span>; j &lt; ans[fa[i]].<span class="built_in">size</span>(); ++j) &#123;</span><br><span class="line">                cout &lt;&lt; ans[fa[i]][j] &lt;&lt; <span class="string">&quot; \n&quot;</span>[j == ans[fa[i]].<span class="built_in">size</span>() - <span class="number">1</span>];</span><br><span class="line">            &#125;</span><br><span class="line">            st2.<span class="built_in">insert</span>(fa[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="缩点"><a href="#缩点" class="headerlink" title="缩点"></a>缩点</h2><p>缩点的步骤和强连通分量差不多，本质是求出强连通分量，取一点为代表，建出新的图。得到新的图为DAG，可以结合toposort进行一些操作</p>
+<p><a target="_blank" rel="noopener" href="https://www.luogu.com.cn/problem/P3387">传送门</a></p>
+<p>这道题是很经典的缩点+拓扑排序，码量有100行，但是思维难度其实不大。做出这题应该也算我学有所成了。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> N = <span class="number">1e4</span> + <span class="number">1</span>;</span><br><span class="line"><span class="type">int</span> n, m;</span><br><span class="line">vector&lt;<span class="type">int</span>&gt; G[N], DAG[N];</span><br><span class="line"><span class="type">int</span> val[N];</span><br><span class="line"><span class="type">int</span> fa[N], in[N];</span><br><span class="line"><span class="type">int</span> dp[N];</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> low[N], dfn[N], dn = <span class="number">0</span>;</span><br><span class="line">stack&lt;<span class="type">int</span>&gt; s;</span><br><span class="line"><span class="type">bool</span> instk[N];</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">tarjan</span><span class="params">(<span class="type">int</span> x)</span> </span>&#123;</span><br><span class="line">    low[x] = dfn[x] = ++dn;</span><br><span class="line">    instk[x] = <span class="literal">true</span>;</span><br><span class="line">    s.<span class="built_in">push</span>(x);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> y : G[x]) &#123;</span><br><span class="line">        <span class="keyword">if</span>(!dfn[y]) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(y);</span><br><span class="line">            low[x] = <span class="built_in">min</span>(low[x], low[y]);</span><br><span class="line">        &#125; <span class="keyword">else</span> <span class="keyword">if</span>(instk[y]) &#123;</span><br><span class="line">            low[x] = <span class="built_in">min</span>(low[x], dfn[y]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(dfn[x] == low[x]) &#123;</span><br><span class="line">        <span class="type">int</span> y;</span><br><span class="line">        <span class="keyword">do</span> &#123;</span><br><span class="line">            y = s.<span class="built_in">top</span>();    s.<span class="built_in">pop</span>();</span><br><span class="line">            instk[y] = <span class="literal">false</span>;   </span><br><span class="line">            fa[y] = x;</span><br><span class="line">            val[x] += val[y];</span><br><span class="line">        &#125; <span class="keyword">while</span>(y != x);</span><br><span class="line">        val[x] &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">        in[x] = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vector&lt;<span class="type">int</span>&gt; L;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">toposort</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    queue&lt;<span class="type">int</span>&gt; q;  </span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(fa[i] == i &amp;&amp; in[i] == <span class="number">0</span>) q.<span class="built_in">push</span>(i); </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(!q.<span class="built_in">empty</span>()) &#123;</span><br><span class="line">        <span class="type">int</span> u = q.<span class="built_in">front</span>();    q.<span class="built_in">pop</span>();</span><br><span class="line">        L.<span class="built_in">push_back</span>(u);</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> v : DAG[u]) &#123;</span><br><span class="line">            <span class="keyword">if</span>(--in[v] == <span class="number">0</span>) q.<span class="built_in">push</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) cin &gt;&gt; val[i];</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> u, v, i = <span class="number">1</span>; i &lt;= m; ++i) &#123;</span><br><span class="line">        cin &gt;&gt; u &gt;&gt; v;</span><br><span class="line">        G[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(dfn[i] == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="built_in">tarjan</span>(i);</span><br><span class="line">        &#125; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    set&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; st;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j : G[i]) &#123;</span><br><span class="line">            <span class="keyword">if</span>(fa[i] == fa[j] || st.<span class="built_in">count</span>(&#123;fa[i], fa[j]&#125;)) <span class="keyword">continue</span>;</span><br><span class="line">            DAG[fa[i]].<span class="built_in">push_back</span>(fa[j]);</span><br><span class="line">            st.<span class="built_in">insert</span>(&#123;fa[i], fa[j]&#125;);</span><br><span class="line">            in[fa[j]]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">toposort</span>();</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> ans = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i : L) &#123;</span><br><span class="line">        <span class="keyword">if</span>(dp[i] == <span class="number">0</span>) dp[i] = val[i];</span><br><span class="line">        <span class="keyword">for</span>(<span class="type">int</span> j : DAG[i]) &#123;</span><br><span class="line">            dp[j] = <span class="built_in">max</span>(dp[j], dp[i] + val[j]);</span><br><span class="line">        &#125;</span><br><span class="line">        ans = <span class="built_in">max</span>(dp[i], ans);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; ans &lt;&lt; endl;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>昨天下午做一些树上问题时想到了这个困扰了我很久的tarjan算法。初三寒假的时候我在SDOI冬令营第一次接触tarjan算法，说实话课上一点也没有理解，当时晚上在机房熬到很久才照着一本通缩点写了60分（tarjan部分应该是对的，当时不会toposort和树形dp），但是还是对这个算法有着很多疑惑，没有彻底理解。</p>
+<p>现在数学水平和思维水平比当时都有所提高了，花了半天的功夫把洛谷上三道模板题啃了下来，并写了这篇题解，送给五年前的自己。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>我很可爱，请给我钱qwq</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.png" alt="路人乙 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="路人乙 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Tarjan/" rel="tag"># Tarjan</a>
+              <a href="/tags/%E5%9B%BE%E8%AE%BA/" rel="tag"># 图论</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/04/06/codeforces-2081A-%E9%A2%98%E8%A7%A3/" rel="prev" title="codeforces 2081A 题解">
+      <i class="fa fa-chevron-left"></i> codeforces 2081A 题解
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tarjan%E7%AE%97%E6%B3%95%E7%94%A8%E9%80%94"><span class="nav-number">2.</span> <span class="nav-text">Tarjan算法用途</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%A2%84%E5%A4%87%E7%9F%A5%E8%AF%86"><span class="nav-number">3.</span> <span class="nav-text">预备知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E7%82%B9%E7%82%B9%E5%A4%87%E6%B3%A8"><span class="nav-number">3.1.</span> <span class="nav-text">一点点备注</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LOW%E6%95%B0%E7%BB%84"><span class="nav-number">4.</span> <span class="nav-text">LOW数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tarjan%E6%B1%82%E5%89%B2%E7%82%B9"><span class="nav-number">5.</span> <span class="nav-text">Tarjan求割点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Tarjan%E6%B1%82%E6%9C%89%E5%90%91%E5%9B%BE%E5%BC%BA%E8%BF%9E%E9%80%9A%E5%88%86%E9%87%8F"><span class="nav-number">6.</span> <span class="nav-text">Tarjan求有向图强连通分量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BC%A9%E7%82%B9"><span class="nav-number">7.</span> <span class="nav-text">缩点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-number">8.</span> <span class="nav-text">后记</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="路人乙"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">路人乙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">22</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/passant1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;passant1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:passerby_1@outlook.com" title="E-Mail → mailto:passerby_1@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2048373239&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;2048373239&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.luogu.com.cn/user/144779" title="luogu → https:&#x2F;&#x2F;www.luogu.com.cn&#x2F;user&#x2F;144779" rel="noopener" target="_blank"><i class="fa fa-code fa-fw"></i>luogu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">路人乙</span>
+</div>
+  <div class="powered-by">
+   <!--由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动 -->
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+<script src="/js/click-effect.js"></script>
+<script src="/js/background-animation.js"></script>
+
+</body>
+</html>
