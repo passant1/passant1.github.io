@@ -20,15 +20,15 @@
     var CONFIG = {"hostname":"passant1.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"enable":false,"style":"tabs","active":false,"storage":true,"lazyload":false},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="前言邀请赛前开始刷刷2100的题。这道题没有涉及到什么算法，但是思维含量很大，我是看到题解之后才注意到做法的。">
+  <meta name="description" content="前言也是之前赛时没做出来的一道题，题意很简单，做法也不难，但是计算时间复杂度可能会难一些，所以很多看起来比较暴力的写法不感谢">
 <meta property="og:type" content="article">
-<meta property="og:title" content="codeforces 2092E 题解">
-<meta property="og:url" content="https://passant1.top/2025/04/14/codeforces-2092E-%E9%A2%98%E8%A7%A3/index.html">
+<meta property="og:title" content="codeforces 2091G 题解">
+<meta property="og:url" content="https://passant1.top/2025/04/15/codeforces-2091G-%E9%A2%98%E8%A7%A3/index.html">
 <meta property="og:site_name" content="路人乙の小窝">
-<meta property="og:description" content="前言邀请赛前开始刷刷2100的题。这道题没有涉及到什么算法，但是思维含量很大，我是看到题解之后才注意到做法的。">
+<meta property="og:description" content="前言也是之前赛时没做出来的一道题，题意很简单，做法也不难，但是计算时间复杂度可能会难一些，所以很多看起来比较暴力的写法不感谢">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-14T14:48:09.000Z">
-<meta property="article:modified_time" content="2025-04-14T15:11:41.738Z">
+<meta property="article:published_time" content="2025-04-15T00:43:11.000Z">
+<meta property="article:modified_time" content="2025-04-15T01:15:20.716Z">
 <meta property="article:author" content="路人乙">
 <meta property="article:tag" content="Algorithm">
 <meta property="article:tag" content="codeforces">
@@ -36,7 +36,7 @@
 <meta property="article:tag" content="思维">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="https://passant1.top/2025/04/14/codeforces-2092E-%E9%A2%98%E8%A7%A3/">
+<link rel="canonical" href="https://passant1.top/2025/04/15/codeforces-2091G-%E9%A2%98%E8%A7%A3/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title>codeforces 2092E 题解 | 路人乙の小窝</title>
+  <title>codeforces 2091G 题解 | 路人乙の小窝</title>
   
 
 
@@ -171,7 +171,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://passant1.top/2025/04/14/codeforces-2092E-%E9%A2%98%E8%A7%A3/">
+    <link itemprop="mainEntityOfPage" href="https://passant1.top/2025/04/15/codeforces-2091G-%E9%A2%98%E8%A7%A3/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -184,7 +184,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          codeforces 2092E 题解
+          codeforces 2091G 题解
         </h1>
 
         <div class="post-meta">
@@ -195,7 +195,7 @@
               <span class="post-meta-item-text">发表于</span>
               
 
-              <time title="创建时间：2025-04-14 22:48:09 / 修改时间：23:11:41" itemprop="dateCreated datePublished" datetime="2025-04-14T22:48:09+08:00">2025-04-14</time>
+              <time title="创建时间：2025-04-15 08:43:11 / 修改时间：09:15:20" itemprop="dateCreated datePublished" datetime="2025-04-15T08:43:11+08:00">2025-04-15</time>
             </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -218,34 +218,38 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>邀请赛前开始刷刷2100的题。这道题没有涉及到什么算法，但是思维含量很大，我是看到题解之后才注意到做法的。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>也是之前赛时没做出来的一道题，题意很简单，做法也不难，但是计算时间复杂度可能会难一些，所以很多看起来比较暴力的写法不感谢</p>
 <hr>
 <span id="more"></span>
-<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>有一个n*m大小的地图，有k个点被染为白色或黑色，其余点没有被染色，求有多少种染色方案能够将其余所有点都染色，并且板上相邻单元格颜色不同的对数是偶数。</p>
-<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><blockquote>
-<p>Hint:</p>
-<p>对于最终的结果，我们只关心相邻单元格颜色不同的对数的奇偶，而并不关心整个值。对某个单元格进行考虑，如果其相邻单元格数量为偶数，那么不管其为什么颜色，其对结果奇偶性没有影响</p>
-</blockquote>
-<p>根据上面的思路，我们可以将所有的单元格分为三类：</p>
+<h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>对于[0, s]的一段区间，第一步可以走任意次k格（走到k、2k、3k……），第二次需要掉头，走任意次(k-1)格，第三次掉头走任意次(k-2)格……第k次掉头走任意次1格，之后走的距离固定为每次1格，求最早到达s的时间。</p>
+<h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>先找到一些特例：</p>
 <ol>
-<li>角单元格，每个单元格有两个相邻的单元格</li>
-<li>边单元格，每个单元格有三个相邻的单元格</li>
-<li>中心单元格，每个单元格有四个相邻的单元格</li>
+<li>当<code>s % k == 0</code>：直接输出k即可</li>
+<li>当 <code>k &lt; 2</code>，那么最终答案一定为1</li>
+<li>当 <code>k * k &lt;= s</code>，最终答案一定为k或k-2，取决于k是否整除s</li>
 </ol>
-<p>显然角单元格和中心单元格的颜色对最终结果无影响。</p>
-<p>为了简化问题，我们可以将所有中心单元格设置为白色，即使某些点已经确定为黑色，把他当作白色看不会影响结果。</p>
-<p>其次，所有的边和角可以构成一个环，先考虑这个环内部对答案的贡献，可以发现相邻单元格颜色不同的对数总是偶数。</p>
-<p>剩余我们需要考虑的就只剩下边单元格和中心单元格之间的互相影响。由于所有中心单元格均为白色，只有黑色的单元格可以产生一个贡献，也就是说黑色边单元格数量的奇偶决定了答案的奇偶。</p>
-<p>接下来对边单元格能否构造出偶数个单元格进行分类：</p>
-<ol>
-<li>所有边单元格都在开始被染过色，那么这其中黑色单元格的数量是确定的，若为奇数，则输出0，否则输出（2^(n*m-k)）（因为所有的未染色单元格都可以任意染色）</li>
-<li>边单元格中存在未染色单元格，假设总共存在z个(z &gt;= 1)，我们可以自由的染色其中的(z - 1)个单元格，而剩下的一个边单元格根据黑色单元格数量决定，总共的方案数应该为(2^(n*m-k-1))</li>
-</ol>
-<p>接下来就很好做了。在读入初始染色格时对边单元格的黑白数量进行记录，之后分类讨论即可。</p>
-<p>注意long long等细节</p>
-<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> ll = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MOD = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line">ll n, m, k;</span><br><span class="line">ll cnt[<span class="number">2</span>];</span><br><span class="line"></span><br><span class="line"><span class="function">ll <span class="title">qpow</span><span class="params">(ll a, ll b)</span> </span>&#123;</span><br><span class="line">    <span class="built_in">assert</span>(b &gt;= <span class="number">0</span>);</span><br><span class="line">    ll res = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">while</span>(b) &#123;</span><br><span class="line">        <span class="keyword">if</span>(b &amp; <span class="number">1</span>) res = res * a % MOD;</span><br><span class="line">        a = a * a % MOD;</span><br><span class="line">        b &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> res;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; m &gt;&gt; k;</span><br><span class="line">    cnt[<span class="number">0</span>] = cnt[<span class="number">1</span>] = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> x, y, c, i = <span class="number">1</span>; i &lt;= k; ++i) &#123;</span><br><span class="line">        cin &gt;&gt; x &gt;&gt; y &gt;&gt; c;</span><br><span class="line">        <span class="type">bool</span> flag1 = (x == <span class="number">1</span> || x == n);</span><br><span class="line">        <span class="type">bool</span> flag2 = (y == <span class="number">1</span> || y == m);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(flag1 ^ flag2) &#123;</span><br><span class="line">            cnt[c]++;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(cnt[<span class="number">0</span>] + cnt[<span class="number">1</span>] == <span class="number">2</span> * (m + n) - <span class="number">8</span>) &#123;</span><br><span class="line">        <span class="keyword">if</span>(cnt[<span class="number">0</span>] &amp; <span class="number">1</span>) cout &lt;&lt; <span class="number">0</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">else</span> cout &lt;&lt; <span class="built_in">qpow</span>(<span class="number">2</span>, n * m - k) &lt;&lt; endl;  </span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        cout &lt;&lt; <span class="built_in">qpow</span>(<span class="number">2</span>, n * m - k - <span class="number">1</span>) &lt;&lt; endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    cout.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="type">int</span> t;  cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">        <span class="built_in">solve</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>今天cf挂掉了，题目交了好久后才告诉我超时。我一开始使用int类型存储所有数据，在取模之前使用<code>* 1ll</code>转化为long long类型数，但是可能某个地方忘记加写暴了（可以注意到我在快速幂中加了断言，提交答案时确实出现了几发RE），最后全改成ll就好了。</p>
-<p>其实这道题的重点还是在思维上。对网格图进行的每一步处理思维量都很大（看数据范围前我的思路是dp，但是看到1e9的数据范围胆怯了）</p>
+<p>前两个特判比较显然，这题的核心在于第三个特判：</p>
+<p>如果能量为k时到达s，那么s一定被k整除，否则无法到达s；</p>
+<p>如果能量为k-1，Gleb的方向指向起点，不可能在此时到达s；</p>
+<p>当能量为k-2时，能否到达s与前两次的步数有关。但注意到我们在第一步走k次，我们在第二次操作时通过左移某个步数x一定可以实现$s - k \times k + x \times (k - 1) \mod (k - 2) = 0$</p>
+<p>证毕.</p>
+<p>进行完特判之后，我们开始考虑对其余情况的判断。假设答案为ans，我们如果在每次遍历从0到s所有的位置，总的时间复杂度为$O(s\times(k - ans))$，这个时间复杂度能否被接受取决于s和ans的范围</p>
+<p>根据特判3，如果s过大,超过k方，我们可以直接将其特判掉，不需要考虑其1e9的范围；</p>
+<p>对于ans，我们同样可以根据特判三估计出其可能的最小值应该接近$\sqrt s$.</p>
+<p>所以设最大运行时间为T，T可以近似为$s \times (k - \sqrt s)$</p>
+<p>T什么时候取最大值呢？</p>
+<p>考虑均值不等式，</p>
+<script type="math/tex; mode=display">
+原式 = \frac {\sqrt s \times \sqrt s \times (2k - 2\sqrt s)}{2}
+\leq \frac{1}{2}(\sqrt s + \sqrt s + 2k - 2 \sqrt s)^2</script><p>当</p>
+<script type="math/tex; mode=display">
+\sqrt s = 2k - 2\sqrt s</script><p>即</p>
+<script type="math/tex; mode=display">
+k = \frac{3}{2}\sqrt s</script><p>T取得最大值$\frac{4k^3}{27}$</p>
+<p>这个复杂度是勉强可以接受的，只是需要注意下常数。</p>
+<p>至此，我们对步数从k到1遍历，可以使用bfs进行更新</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> s, k;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; s &gt;&gt; k;</span><br><span class="line">    <span class="keyword">if</span>(s % k == <span class="number">0</span>) &#123;</span><br><span class="line">        cout &lt;&lt; k &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(k &lt;= <span class="number">2</span>) &#123;</span><br><span class="line">        cout &lt;&lt; <span class="number">1</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span>(s &gt;= k * k) &#123;</span><br><span class="line">        cout &lt;&lt; k - <span class="number">2</span> &lt;&lt; endl;</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    queue&lt;pair&lt;<span class="type">int</span>, <span class="type">int</span>&gt;&gt; q;</span><br><span class="line">    q.<span class="built_in">push</span>(&#123;<span class="number">0</span>, k + <span class="number">1</span>&#125;);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = k; i &gt;= <span class="number">1</span>; --i) &#123;</span><br><span class="line">        <span class="keyword">if</span>(i % <span class="number">2</span> == k % <span class="number">2</span>) &#123;</span><br><span class="line">            set&lt;<span class="type">int</span>&gt; st;</span><br><span class="line">            <span class="keyword">while</span>(q.<span class="built_in">front</span>().second &gt; i) &#123;</span><br><span class="line">                <span class="type">int</span> top = q.<span class="built_in">front</span>().first;    q.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">if</span>(st.<span class="built_in">count</span>(top)) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> j = top + i; j &lt;= s <span class="keyword">and</span> !st.<span class="built_in">count</span>(j); j += i) &#123;</span><br><span class="line">                    st.<span class="built_in">insert</span>(j);</span><br><span class="line">                    q.<span class="built_in">push</span>(&#123;j, i&#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(st.<span class="built_in">count</span>(s)) &#123;</span><br><span class="line">                cout &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            set&lt;<span class="type">int</span>&gt; st;</span><br><span class="line">            <span class="keyword">while</span>(q.<span class="built_in">front</span>().second &gt; i) &#123;</span><br><span class="line">                <span class="type">int</span> top = q.<span class="built_in">front</span>().first;  q.<span class="built_in">pop</span>();</span><br><span class="line">                <span class="keyword">if</span>(st.<span class="built_in">count</span>(top)) <span class="keyword">continue</span>;</span><br><span class="line">                <span class="keyword">for</span>(<span class="type">int</span> j = top - i; j &gt;= <span class="number">0</span> <span class="keyword">and</span> !st.<span class="built_in">count</span>(j); j -= i) &#123;</span><br><span class="line">                    st.<span class="built_in">insert</span>(j);</span><br><span class="line">                    q.<span class="built_in">push</span>(&#123;j, i&#125;);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(st.<span class="built_in">count</span>(s)) &#123;</span><br><span class="line">                cout &lt;&lt; i &lt;&lt; endl;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    cout &lt;&lt; <span class="number">1</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ios::<span class="built_in">sync_with_stdio</span>(<span class="literal">false</span>);</span><br><span class="line">    cin.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);   cout.<span class="built_in">tie</span>(<span class="literal">nullptr</span>);</span><br><span class="line">    <span class="type">int</span> t;  cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">        <span class="built_in">solve</span>();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>题目本身不难，但是如果赛时因为常数TLE掉怀疑自己时间复杂度算错也不是不可能……</p>
 
     </div>
 
@@ -287,13 +291,10 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2025/04/10/Tarjan%E7%AE%97%E6%B3%95/" rel="prev" title="Tarjan算法">
-      <i class="fa fa-chevron-left"></i> Tarjan算法
+    <a href="/2025/04/14/codeforces-2092E-%E9%A2%98%E8%A7%A3/" rel="prev" title="codeforces 2092E 题解">
+      <i class="fa fa-chevron-left"></i> codeforces 2092E 题解
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2025/04/15/codeforces-2091G-%E9%A2%98%E8%A7%A3/" rel="next" title="codeforces 2091G 题解">
-      codeforces 2091G 题解 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -478,59 +479,6 @@
   
 
   
-      
-
-<script>
-  if (typeof MathJax === 'undefined') {
-    window.MathJax = {
-      loader: {
-        source: {
-          '[tex]/amsCd': '[tex]/amscd',
-          '[tex]/AMScd': '[tex]/amscd'
-        }
-      },
-      tex: {
-        inlineMath: {'[+]': [['$', '$']]},
-        tags: 'ams'
-      },
-      options: {
-        renderActions: {
-          findScript: [10, doc => {
-            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-              const display = !!node.type.match(/; *mode=display/);
-              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-              const text = document.createTextNode('');
-              node.parentNode.replaceChild(text, node);
-              math.start = {node: text, delim: '', n: 0};
-              math.end = {node: text, delim: '', n: 0};
-              doc.math.push(math);
-            });
-          }, '', false],
-          insertedScript: [200, () => {
-            document.querySelectorAll('mjx-container').forEach(node => {
-              let target = node.parentNode;
-              if (target.nodeName.toLowerCase() === 'li') {
-                target.parentNode.classList.add('has-jax');
-              }
-            });
-          }, '', false]
-        }
-      }
-    };
-    (function () {
-      var script = document.createElement('script');
-      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
-      script.defer = true;
-      document.head.appendChild(script);
-    })();
-  } else {
-    MathJax.startup.document.state(0);
-    MathJax.texReset();
-    MathJax.typeset();
-  }
-</script>
-
-    
 
   
 <script src="/js/click-effect.js"></script>
