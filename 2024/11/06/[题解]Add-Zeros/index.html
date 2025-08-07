@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
@@ -229,18 +229,21 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>刷cf的时候学到很多的一道题，倒不是说这个题出的多好，只是我跟着这个题的题解学到了很多c++新标准的语法之类的内容。</p>
 <hr>
 <span id="more"></span>
+
 <h2 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h2><p>You’re given an array a initially containing nn integers. In one operation, you must do the following:</p>
 <ul>
-<li>Choose a position <script type="math/tex">i</script> such that <code>1&lt;i≤|a|</code> and <code>a_i=|a|+1−i</code>, where <strong>|a|</strong> is the <strong>current</strong> size of the array.</li>
+<li>Choose a position $$i$$ such that <code>1&lt;i≤|a|</code> and <code>a_i=|a|+1−i</code>, where <strong>|a|</strong> is the <strong>current</strong> size of the array.</li>
 <li>Append <code>i−1</code> zeros onto the end of a.</li>
 </ul>
 <p>After performing this operation as many times as you want, what is the maximum possible length of the array $a$?</p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>这个题的思路其实不是很难，只是题目本身有点绕，实际上只要根据题意建图后跑dfs就好，不过有很多细节需要处理。</p>
-<p>注意<code>`a_i</code>的数量级为1e14</p>
+<p>注意&#96;&#96;a_i&#96;的数量级为1e14</p>
 <h2 id="代码"><a href="#代码" class="headerlink" title="代码"></a>代码</h2><p>虽然跟着std精简了很多我的代码，可是结果还是很丑，不如在std的基础上补充细节：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="keyword">using</span> ll = <span class="type">long</span> <span class="type">long</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">  cin.<span class="built_in">tie</span>(<span class="number">0</span>)-&gt;<span class="built_in">sync_with_stdio</span>(<span class="number">0</span>);</span><br><span class="line">  <span class="type">int</span> t;</span><br><span class="line">  cin &gt;&gt; t;</span><br><span class="line">  <span class="keyword">while</span> (t--) &#123;</span><br><span class="line">        <span class="type">int</span> n;</span><br><span class="line">        cin &gt;&gt; n;</span><br><span class="line">        <span class="function">vector&lt;ll&gt; <span class="title">A</span><span class="params">(n)</span></span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; n; i++) cin &gt;&gt; A[i];</span><br><span class="line">        map&lt;ll,vector&lt;ll&gt;&gt; adj;	<span class="comment">// 使用vector不方便建图（第一维太大，1e14）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">1</span>; i&lt;n; i++) &#123;</span><br><span class="line">            ll u = A[i] + i;</span><br><span class="line">            ll v = u + i;</span><br><span class="line">            adj[u].<span class="built_in">push_back</span>(v);</span><br><span class="line">        &#125;</span><br><span class="line">        set&lt;ll&gt; vis;	<span class="comment">// 不能使用bool数组，因为未离散化的数组下标很大</span></span><br><span class="line">        function&lt;<span class="type">void</span>(ll)&gt; dfs = [&amp;](ll u) -&gt; <span class="type">void</span> &#123;	<span class="comment">// lambda函数</span></span><br><span class="line">            <span class="keyword">if</span> (vis.<span class="built_in">count</span>(u)) <span class="keyword">return</span>;</span><br><span class="line">            vis.<span class="built_in">insert</span>(u);</span><br><span class="line">            <span class="keyword">for</span> (ll v : adj[u]) <span class="built_in">dfs</span>(v);</span><br><span class="line">        &#125;;</span><br><span class="line">        <span class="built_in">dfs</span>(n);</span><br><span class="line">        cout &lt;&lt; *vis.<span class="built_in">rbegin</span>() &lt;&lt; <span class="string">&quot;\n&quot;</span>;	<span class="comment">// 使用*rbegin()找到set末尾元素，也就是可以访问到的最大长度</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="lambda表达式"><a href="#lambda表达式" class="headerlink" title="lambda表达式"></a>lambda表达式</h2><p>其实这东西对我来说并不算陌生，我在python和matlab中偶尔会用到这东西，在c++也阅读过jiangly大佬的代码。我很喜欢这种简洁清晰的表达方式，不过从未在c++中编写过带lambda函数的程序。</p>
 <h3 id="格式"><a href="#格式" class="headerlink" title="格式"></a>格式</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[capture](parameter_list) -&gt; return_type &#123; body &#125;</span><br></pre></td></tr></table></figure>
+
 <ul>
 <li><p><code>capture</code>: 捕获外部变量的方式，可以通过值捕获、引用捕获等。</p>
 </li>
@@ -273,6 +276,7 @@
 <p>对于第一个方法，std中的dfs就是用这种方式实现递归，其中void(ll)为函数类型，即返回值为空，参数类型为ll。</p>
 <p>对于第二种方法：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">auto</span> dfs = [&amp;](<span class="keyword">auto</span> &amp;&amp;self, <span class="type">long</span> <span class="type">long</span> u) -&gt; <span class="type">void</span> &#123;</span><br><span class="line">    <span class="keyword">if</span>(vis.<span class="built_in">count</span>(u)) <span class="keyword">return</span>; </span><br><span class="line">    vis.<span class="built_in">insert</span>(u);</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">long</span> <span class="type">long</span> v : adj[u]) <span class="built_in">self</span>(self, v);</span><br><span class="line">&#125;;</span><br><span class="line"><span class="built_in">dfs</span>(dfs, n);</span><br></pre></td></tr></table></figure>
+
 <p>这段代码通过<code>auto&amp;&amp; self</code>实现了自引用，每次调用函数需要额外添加<code>self</code>参数。</p>
 <blockquote>
 <p>ChatGPT-4o:</p>
@@ -281,13 +285,16 @@
 </blockquote>
 <h2 id="搭配stl"><a href="#搭配stl" class="headerlink" title="搭配stl"></a>搭配stl</h2><p>其实与这个题目无关，不过经常使用<code>sort</code>定义cmp函数时可以在函数内写lambda表达式：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">sort</span>(arr.<span class="built_in">begin</span>(), arr.<span class="built_in">end</span>(), [](<span class="type">const</span> Node &amp;a, <span class="type">const</span> Node &amp;b) &#123;</span><br><span class="line">    <span class="keyword">return</span> a.id &lt; b.id;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
 <p>除了sort，其他很多stl库中的函数也可以用lambda表达式来精简参数，使代码更简洁好看。</p>
 <h2 id="STL使用"><a href="#STL使用" class="headerlink" title="STL使用"></a>STL使用</h2><p>我从初中开始打noip时就非常热爱stl，对现成的函数和数据结构爱不释手。</p>
 <p>但是有的时候阅读这些题解才发现我对stl的使用并不优雅，至少打眼一看，代码里全是固定MAXN大小的数组。</p>
 <p>这道题可以看出的可以借鉴的stl写法：</p>
 <ul>
-<li>使用vector代替数组</li>
-<li>使用set代替bool数组 / 哈希（毕竟可以用stl谁愿意手搓呢）</li>
+<li><p>使用vector代替数组</p>
+</li>
+<li><p>使用set代替bool数组 &#x2F; 哈希（毕竟可以用stl谁愿意手搓呢）</p>
+</li>
 <li><p>使用map解决下标范围广的存图问题</p>
 </li>
 <li><p>使用<code>*rbegin()</code>而不是额外定义变量获取最大值</p>
@@ -414,7 +421,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

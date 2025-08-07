@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
@@ -220,21 +220,23 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>这道题和<a href="https://passant1.top/2025/04/04/codeforces-2082B-%E9%A2%98%E8%A7%A3/#more">之前这道题</a>有很多共同之处。相比之下，这道题可能更深刻一点。</p>
 <hr>
 <span id="more"></span>
+
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>对于一个二进制数，有两个操作</p>
 <ol>
 <li>除以二向上取整</li>
 <li>除以二向下取整</li>
 </ol>
-<p>进行每种操作的概率为1/2，经过若干次操作后将这个数字变为1，求出操作的长度的期望</p>
+<p>进行每种操作的概率为1&#x2F;2，经过若干次操作后将这个数字变为1，求出操作的长度的期望</p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>乍一看很像数学题，求数学期望之类的，但结合上一题的结论，可以注意到这个操作的长度只能为n或n-1，当且仅当数字在第最低位发生进位时答案为n</p>
 <p>那么这道题可以转化为求第i位发生进位的概率。</p>
 <p>显然从低到高第i位发生进位的概率仅与第i位的数值和第i-1位发生进位的概率有关，记第i位发生进位的概率为f(i)具体来说：</p>
 <ul>
-<li>若第i位为0，那么只有当第i-1位发生进位时第i位有可能发生进位，且$f(i) = \frac{1}{2}f(i - 1)$</li>
-<li>若第i位为1，那么$f(i) = \frac{1}{2}f(i - 1) + \frac{1}{2}$</li>
+<li>若第i位为0，那么只有当第i-1位发生进位时第i位有可能发生进位，且$f(i) &#x3D; \frac{1}{2}f(i - 1)$</li>
+<li>若第i位为1，那么$f(i) &#x3D; \frac{1}{2}f(i - 1) + \frac{1}{2}$</li>
 </ul>
 <p>本题计算除法时除数总为2，所以只需要预处理inv2即可，不需要写逆元函数。</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">const</span> <span class="type">int</span> inv2 = <span class="number">500000004</span>;</span><br><span class="line"><span class="type">const</span> <span class="type">int</span> MOD = <span class="number">1e9</span> + <span class="number">7</span>;</span><br><span class="line"><span class="type">int</span> n;</span><br><span class="line">string s;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; n &gt;&gt; s;</span><br><span class="line">    s = <span class="string">&quot; &quot;</span> + s;</span><br><span class="line">    <span class="type">int</span> f = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = n; i &gt; <span class="number">1</span>; --i) &#123;</span><br><span class="line">        f = inv2 * <span class="number">1ll</span> * (f + s[i] - <span class="string">&#x27;0&#x27;</span>) % MOD; </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; n - <span class="number">1</span> + f &lt;&lt; endl;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> t;  cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">while</span>(t--) &#123;</span><br><span class="line">        <span class="built_in">solve</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>代码其实还是比较简单的，但是其实思维量比想象的大，所以rating为1800啊</p>
 
     </div>
@@ -357,7 +359,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

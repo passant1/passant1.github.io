@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
@@ -224,15 +224,20 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>字符串算法是OI、XCPC比赛中的一个常考考点。我在很久之前就学习过KMP，但最近才开始集中刷题，更深刻的理解KMP算法。</p>
 <hr>
 <span id="more"></span>
+
 <h2 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h2><h3 id="字符串匹配"><a href="#字符串匹配" class="headerlink" title="字符串匹配"></a>字符串匹配</h3><p>KMP算法可以以 $O(n + m)$ 的高效时间复杂度处理字符串匹配问题，即对于给定的文本串s和模式串p，KMP算法可以在线性时间复杂度内求解出s中每个p出现的位置。</p>
 <h3 id="找到循环部分"><a href="#找到循环部分" class="headerlink" title="找到循环部分"></a>找到循环部分</h3><p>kMP算法的本质是求解<code>nxt</code>数组，即对于 $S$ 的每个前缀 $S_i$，nxt[i]为满足 $S_i$ 长度为x的前缀，等于长度为x的后缀的x的最大值。</p>
 <p>通过nxt数组的性质，如果一个长度为n的字符串存在循环节（周期），那么它的循环节长度为：</p>
-<script type="math/tex; mode=display">len = n - nxt[n]</script><p>当len不整除n，或len与n相等时，这个字符串无周期。</p>
+<p>$$len &#x3D; n - nxt[n]$$</p>
+<p>当len不整除n，或len与n相等时，这个字符串无周期。</p>
 <h3 id="求解两个字符串的最大重叠部分"><a href="#求解两个字符串的最大重叠部分" class="headerlink" title="求解两个字符串的最大重叠部分"></a>求解两个字符串的最大重叠部分</h3><p>对于字符串s和t，将两个字符串拼接在一起，以‘ ’隔开，(假设拼凑完的字符串长度为n)，nxt[n]即代表s长度为nxt[n]的前缀与t长度为nxt[n]的后缀长度相等。</p>
 <h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>KMP算法的原理其实并不好解释。相比于暴力匹配字符串，nxt数组记录了字符串s每个前缀满足前缀与后缀相等的最大前后缀长度，即求解出了一个重叠部分，下次匹配时可以从nxt[j]处匹配，而不需要从头开始。</p>
 <p>算法整体时间复杂度$O(n + m)$,其中n、m分别为文本串和模式串的长度。</p>
 <p>我参考了ChatGPT-4o和OI-wiki，通过反复在vjudge的题单上刷题，终于理解了KMP的原理，nxt数组的深刻含义，可以着手解决复杂的KMP题。</p>
 <h2 id="代码（匹配问题）"><a href="#代码（匹配问题）" class="headerlink" title="代码（匹配问题）"></a>代码（匹配问题）</h2><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">KMP</span><span class="params">(string s, string t)</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> n = s.<span class="built_in">size</span>(), m = t.<span class="built_in">size</span>();</span><br><span class="line">    s = <span class="string">&quot; &quot;</span> + s;</span><br><span class="line">    t = <span class="string">&quot; &quot;</span> + t;</span><br><span class="line">    <span class="comment">// 求解nxt数组</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">2</span>, j = <span class="number">0</span>; i &lt;= m; ++i) &#123;</span><br><span class="line">        <span class="built_in">whlie</span>(j &amp;&amp; t[i] != t[j + <span class="number">1</span>]) j = nxt[j];</span><br><span class="line">        <span class="keyword">if</span>(t[i] == t[j + <span class="number">1</span>]) ++j</span><br><span class="line">        nxt[i] = j;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 进行匹配</span></span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>, j = <span class="number">0</span>; i &lt;= n; ++i) &#123;</span><br><span class="line">        <span class="keyword">while</span>(j &amp;&amp; s[i] != t[j + <span class="number">1</span>]) j = nxt[j];</span><br><span class="line">        <span class="keyword">if</span>(s[i] == t[j + <span class="number">1</span>]) ++j;</span><br><span class="line">        <span class="keyword">if</span>(j == m) &#123;	<span class="comment">// 匹配成功</span></span><br><span class="line">            cout &lt;&lt; i - m + <span class="number">1</span> &lt;&lt; endl;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
 <h2 id="感想"><a href="#感想" class="headerlink" title="感想"></a>感想</h2><p>kmp原理理解起来非常复杂，我找到的每一篇关于kmp算法的帖子下都有人评论看不懂。有许多dalao也用图文的方式解释kmp，但我最终还是先去背了算法的模板，在字符串题单中刷题，最后才逐渐掌握了kmp算法的原理及应用。</p>
 
     </div>
@@ -353,7 +358,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

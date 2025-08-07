@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
@@ -228,25 +228,28 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>好像是很久之前就没做出来的一道题（div2.B，鬼知道我那场掉了多少分），今天补的时候的想法和赛时一摸一样的，结果一摸一样的WA2了。题目其实不难（毕竟是div2.B），但是有些思维点还是挺关键的。</p>
 <hr>
 <span id="more"></span>
+
 <h2 id="题意"><a href="#题意" class="headerlink" title="题意"></a>题意</h2><p>有一个数x，可以对其执行n次除以二向下取整的操作和m次除以二向上取整的操作，求任意顺序操作后x的最小值和最大值。</p>
 <h2 id="赛时思路"><a href="#赛时思路" class="headerlink" title="赛时思路"></a>赛时思路</h2><p>n和m很大，但实际上x只要0之后就不需要考虑剩下的操作，暴力的复杂度应该为$O(logx)$.</p>
 <p>赛时我用了个假贪心，求最小值时当x为奇数且n、m均大于0就向下取整，否则就向上取整；求最大值时当x为偶数且n、m均大于0就向下取整，否则就向上取整。</p>
 <p><strong>为什么这个贪心是错的？</strong></p>
 <p>考虑下面一组样例</p>
 <figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">3 1 2</span><br></pre></td></tr></table></figure>
-<p>求最小值时，对于x=3为奇数，我们先执行了向上取整，得到2；</p>
-<p>x=2为偶数，我们向下取整得到1；</p>
-<p>x=1为奇数，我们向上取整，值不变，最终结果为1.</p>
-<p>但是显然，对x=3进行两次除以二向上取整后得到1，再进行向下取整可以得到0，这是一个更优的答案。</p>
+
+<p>求最小值时，对于x&#x3D;3为奇数，我们先执行了向上取整，得到2；</p>
+<p>x&#x3D;2为偶数，我们向下取整得到1；</p>
+<p>x&#x3D;1为奇数，我们向上取整，值不变，最终结果为1.</p>
+<p>但是显然，对x&#x3D;3进行两次除以二向上取整后得到1，再进行向下取整可以得到0，这是一个更优的答案。</p>
 <h2 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h2><p>根据除以二的操作联想到二进制</p>
-<p>举个例子，$x=12=(1100)_2\ , n=1,\ m=2$</p>
+<p>举个例子，$x&#x3D;12&#x3D;(1100)_2\ , n&#x3D;1,\ m&#x3D;2$</p>
 <p>不管我们以什么样的顺序进行操作，最高位的1是保留的。</p>
 <p><strong>后面的(n+m)位呢？</strong></p>
 <p>进行n+m次位移后，后（n+m）位得到的结果一定为0或1.其中如果希望得到1，最后一次操作一定为除以二向上取整；</p>
 <p>可以得到结论，<strong>先进行n次除以二向下取整操作，后进行m次除以二向上取整操作，最终得到的一定是最大值</strong></p>
 <p>同样，<strong>先进行m次除以二向上取整操作，后进行n次除以二向下取整操作，最终得到的一定是最小值</strong></p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;bits/stdc++.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> x, n, m;</span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">solve</span><span class="params">(<span class="type">int</span> to, <span class="type">int</span> e)</span> </span>&#123;</span><br><span class="line">    cin &gt;&gt; x &gt;&gt; n &gt;&gt; m;</span><br><span class="line">    <span class="type">int</span> tx = x, tn = n, tm = m;</span><br><span class="line">    <span class="keyword">while</span>(tx &gt; <span class="number">1</span> <span class="keyword">and</span> tm &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        tx = tx + <span class="number">1</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        tm--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(tx <span class="keyword">and</span> tn &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        tx = tx &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        tn--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; tx &lt;&lt; <span class="string">&#x27; &#x27;</span>;</span><br><span class="line"></span><br><span class="line">    tx = x, tn = n, tm = m;</span><br><span class="line">    <span class="keyword">while</span>(tx <span class="keyword">and</span> tn &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        tx = tx &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        tn--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">while</span>(tx &gt; <span class="number">1</span> <span class="keyword">and</span> tm &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        tx = tx + <span class="number">1</span> &gt;&gt; <span class="number">1</span>;</span><br><span class="line">        tm--;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    cout &lt;&lt; tx &lt;&lt; <span class="string">&#x27;\n&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> t;  cin &gt;&gt; t;</span><br><span class="line">    <span class="keyword">for</span>(<span class="type">int</span> i = <span class="number">1</span>; i &lt;= t; ++i) &#123;</span><br><span class="line">        <span class="built_in">solve</span>(t, i);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>除了整道题目的大思路，这道题还有一些小细节，比如在向上取整时，如果x值为1，程序可能会连续执行m（最大为1e9）次操作，这是不能接受的，因此应该在x&lt;=1时立即跳出循环。对于向下取整的部分，x非零即可。</p>
+
+<h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>除了整道题目的大思路，这道题还有一些小细节，比如在向上取整时，如果x值为1，程序可能会连续执行m（最大为1e9）次操作，这是不能接受的，因此应该在x&lt;&#x3D;1时立即跳出循环。对于向下取整的部分，x非零即可。</p>
 <p>最终复杂度 $O(logx)$，也许有$O(1)$的数学做法，但我没有去验证过。</p>
 <p>这道题前前后后WA + TLE一共10发，其中WA的部分都是思路的问题。</p>
 
@@ -372,7 +375,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>

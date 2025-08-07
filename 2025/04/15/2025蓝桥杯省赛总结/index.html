@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
-<meta name="generator" content="Hexo 6.3.0">
+<meta name="generator" content="Hexo 7.3.0">
   <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
@@ -218,6 +218,7 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>蓝桥杯省赛打完了，但最近有点颓，一直没有补题，所以先开个博客总结一下，等着之后更新补题。</p>
 <hr>
 <span id="more"></span>
+
 <h2 id="概览"><a href="#概览" class="headerlink" title="概览"></a>概览</h2><p>这次题目比去年简单多了，但是自己还是有很多失误就是了。等着出成绩之后再更新下博客。</p>
 <p>话说今年CA居然比CB简单）</p>
 <h2 id="A-寻找质数"><a href="#A-寻找质数" class="headerlink" title="A. 寻找质数"></a>A. 寻找质数</h2><p>填空题第一题，纯签到题，不需要什么复杂的算法，暴力筛就行</p>
@@ -225,7 +226,7 @@
 <p>网上刷到有人纯用游戏规则做出了这个题（没用到算法，也不是猜的），和扫雷和数独其实挺像的</p>
 <h2 id="C-抽奖"><a href="#C-抽奖" class="headerlink" title="C. 抽奖"></a>C. 抽奖</h2><p>签到题，模拟一下就好，但是我回头看的时候总觉得判断两个重复的情况时判漏了</p>
 <h2 id="D-红黑树"><a href="#D-红黑树" class="headerlink" title="D. 红黑树"></a>D. 红黑树</h2><p>赛时在纸上手搓了几行，发现左对齐后下一行的前半部分和上一行是完全一样的，后半部分相当于将前半部分倒置后面。</p>
-<p>可以忽略n，对于每个k找到最大的i使得（1 &lt;&lt; i）&lt; k, 得到递推公式：f(k) = 1 - f(k - (1 &lt;&lt; i)), 边界为f(1) = 1, f(2) = 0;</p>
+<p>可以忽略n，对于每个k找到最大的i使得（1 &lt;&lt; i）&lt; k, 得到递推公式：f(k) &#x3D; 1 - f(k - (1 &lt;&lt; i)), 边界为f(1) &#x3D; 1, f(2) &#x3D; 0;</p>
 <h2 id="E-黑客"><a href="#E-黑客" class="headerlink" title="E. 黑客"></a>E. 黑客</h2><p>看到这题第一反应蒙了一下，因为我其实不会组合数板子（逃）</p>
 <p>手搓了一下发现可以直接预处理阶乘去做（因为逆元我也不会预处理，只会拿公式去求）</p>
 <p>用一个桶维护所有元素，找到所有合法的行列数n, m。如果忽略重复出现的数字，答案应该为(n*m)!种，再将重复元素考虑进去，假设某个元素有出现x次，只要除以x!即可。</p>
@@ -240,7 +241,7 @@
 <p>等着之后学会基环树后来补这道题。</p>
 <h2 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h2><p>每道题总结写完了，刚出考场的时候挺有信心的，但现在已经没什么信心了）</p>
 <p>话说理学楼的键盘敲backspace键要好用力才行……</p>
-<p>算下期望得分 5 + 5 + 10 + 10 + 7 + 12 = 49，其中C总感觉写错了，但是不确定，算了5分，H就算思路错了应该也有部分分，但是没算分，E按洛谷的50分算，记了七分，F按80%做法的12分算。</p>
+<p>算下期望得分 5 + 5 + 10 + 10 + 7 + 12 &#x3D; 49，其中C总感觉写错了，但是不确定，算了5分，H就算思路错了应该也有部分分，但是没算分，E按洛谷的50分算，记了七分，F按80%做法的12分算。</p>
 <p>应该能进国赛吧……</p>
 <p>至于补题先咕一下</p>
 
@@ -362,7 +363,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">22</span>
+          <span class="site-state-item-count">23</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
