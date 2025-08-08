@@ -44,7 +44,23 @@
     lang   : 'zh-CN'
   };
 </script>
+<style>
+@font-face {
+  font-family: "LXGWWenKaiGBScreenR";
+  src: url("/fonts/LXGWWenKaiGBScreenR.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
 
+:root {
+  --font-family-base: "LXGWWenKaiGBScreenR", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body, .post-body {
+  font-family: var(--font-family-base) !important;
+}
+</style>
   <title>About | 路人乙の小窝
 </title>
   
