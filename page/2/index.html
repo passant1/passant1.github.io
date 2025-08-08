@@ -40,6 +40,38 @@
     lang   : 'zh-CN'
   };
 </script>
+<div id="site-preloader" aria-hidden="true" role="status">
+  <div class="preloader-inner">
+    <div class="preloader-logo">Loading • 路人乙の小窝</div>
+    <div class="preloader-dots" aria-label="Loading">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Show preloader immediately on navigation away to avoid content flash on next page
+(function(){
+  var pre = document.getElementById('site-preloader');
+  function show(){ if (pre) { pre.classList.remove('hidden'); } }
+  window.addEventListener('beforeunload', show);
+  // For in-page link clicks (no PJAX): show preloader asap
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var url = a.getAttribute('href');
+    if (!url || url.startsWith('#') || a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    // Same-origin navigation only
+    try {
+      var u = new URL(url, location.href);
+      if (u.origin === location.origin) {
+        pre && pre.classList.remove('hidden');
+      }
+    } catch(_){}
+  }, true);
+})();
+</script>
+
 <style>
 @font-face {
   font-family: "LXGWWenKaiGBScreenR";
@@ -53,8 +85,106 @@
   --font-family-base: "LXGWWenKaiGBScreenR", "PingFang SC", "Microsoft YaHei", sans-serif;
 }
 
+/* Do not use !important here so MathJax/KaTeX can apply their own fonts */
 body, .post-body {
-  font-family: var(--font-family-base) !important;
+  font-family: var(--font-family-base);
+}
+
+/* Ensure math layout is not affected by global font rules */
+mjx-container, mjx-container * {
+  line-height: normal;
+}
+
+/* MathJax rendering safeguards */
+.post-body mjx-container {
+  overflow: visible;
+  word-break: normal;
+  overflow-wrap: normal;
+  text-align: initial;
+}
+.post-body mjx-container[display="true"] {
+  display: block;
+  text-align: center;
+  margin: 1em 0;
+}
+.post-body mjx-container:not([display="true"]) {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+/* Preloader overlay */
+#site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  transition: opacity .3s ease, visibility .3s ease;
+}
+#site-preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+.preloader-spinner {
+  width: 56px;
+  height: 56px;
+  border: 4px solid rgba(0,0,0,.1);
+  border-top-color: #222;
+  border-radius: 50%;
+  animation: spinner .9s linear infinite;
+}
+@keyframes spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Enhanced preloader visuals */
+#site-preloader {
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(136,207,219,.25), transparent 60%),
+              radial-gradient(1000px 500px at 80% 90%, rgba(34,42,48,.08), transparent 60%),
+              linear-gradient(180deg, #fff, #f7f7f7);
+}
+#site-preloader .preloader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+#site-preloader .preloader-logo {
+  font-family: var(--font-family-base, system-ui, -apple-system, Segoe UI, Arial, sans-serif);
+  font-size: 20px;
+  letter-spacing: .12em;
+  color: #222;
+  opacity: .9;
+}
+#site-preloader .preloader-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 14px;
+}
+#site-preloader .preloader-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #222;
+  opacity: .25;
+  animation: preloader-dot 1s ease-in-out infinite;
+}
+#site-preloader .preloader-dots span:nth-child(1) { animation-delay: 0s; }
+#site-preloader .preloader-dots span:nth-child(2) { animation-delay: .1s; }
+#site-preloader .preloader-dots span:nth-child(3) { animation-delay: .2s; }
+#site-preloader .preloader-dots span:nth-child(4) { animation-delay: .3s; }
+#site-preloader .preloader-dots span:nth-child(5) { animation-delay: .4s; }
+@keyframes preloader-dot {
+  0%, 100% { transform: translateY(0); opacity: .25; }
+  50% { transform: translateY(-8px); opacity: .9; }
+}
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  #site-preloader .preloader-dots span { animation: none; opacity: .6; }
 }
 </style>
   <title>路人乙の小窝</title>
@@ -1243,6 +1373,25 @@ body, .post-body {
   
 <script src="/js/click-effect.js"></script>
 <script src="/js/background-animation.js"></script>
+
+<script>
+(function() {
+  var done = false;
+  var pre = document.getElementById('site-preloader');
+  function hide() {
+    if (done || !pre) return;
+    done = true;
+    pre.classList.add('hidden');
+    setTimeout(function(){ pre && pre.remove && pre.remove(); }, 350);
+  }
+  if (document.readyState === 'complete') {
+    hide();
+  } else {
+    window.addEventListener('load', hide, { once: true });
+  }
+  setTimeout(hide, 10000);
+})();
+</script>
 
 </body>
 </html>
