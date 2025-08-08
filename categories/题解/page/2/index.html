@@ -594,7 +594,31 @@ mjx-container, mjx-container * {
   
 <script src="/js/click-effect.js"></script>
 <script src="/js/background-animation.js"></script>
-<script src="/js/smooth-scroll.js"></script>
+
+<!-- Lenis smooth scroll (popular, natural feel) -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.45/bundled/lenis.min.js"></script>
+<script>
+(function() {
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced || typeof Lenis === 'undefined') return;
+
+  // Hand-following + faster speed as requested
+  var lenis = new Lenis({
+    smoothWheel: true,
+    smoothTouch: false,
+    lerp: 0.7,
+    wheelMultiplier: 1.8,
+    touchMultiplier: 1.0,
+    normalizeWheel: true
+  });
+
+  function raf(time){
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+})();
+</script>
 
 <script>
 (function() {
