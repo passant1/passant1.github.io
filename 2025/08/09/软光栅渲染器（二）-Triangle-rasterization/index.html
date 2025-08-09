@@ -20,21 +20,22 @@
     var CONFIG = {"hostname":"passant1.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"enable":false,"style":"tabs","active":false,"storage":true,"lazyload":false},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="前言学习二进制及相关运算是计算机学习的重要部分。为了解决我在学习汇编时遇到的问题，我想在这篇博客中梳理并巩固之前所学习的二进制内容，从而更好的往下学习。">
+  <meta name="description" content="前言在上一课我们已经实现了3d模型的线框渲染，现在我们希望为他填色，也就是说每个三角形都是实心的。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="关于二进制">
-<meta property="og:url" content="https://passant1.top/2023/10/06/%E5%85%B3%E4%BA%8E%E4%BA%8C%E8%BF%9B%E5%88%B6/index.html">
+<meta property="og:title" content="软光栅渲染器（二） Triangle rasterization">
+<meta property="og:url" content="https://passant1.top/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/index.html">
 <meta property="og:site_name" content="路人乙の小窝">
-<meta property="og:description" content="前言学习二进制及相关运算是计算机学习的重要部分。为了解决我在学习汇编时遇到的问题，我想在这篇博客中梳理并巩固之前所学习的二进制内容，从而更好的往下学习。">
+<meta property="og:description" content="前言在上一课我们已经实现了3d模型的线框渲染，现在我们希望为他填色，也就是说每个三角形都是实心的。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2023-10-06T02:26:24.000Z">
-<meta property="article:modified_time" content="2025-08-08T15:03:15.369Z">
+<meta property="og:image" content="https://passant1.top/images%5Crgs2head.png">
+<meta property="article:published_time" content="2025-08-09T01:30:24.000Z">
+<meta property="article:modified_time" content="2025-08-09T02:38:50.089Z">
 <meta property="article:author" content="路人乙">
-<meta property="article:tag" content="math">
-<meta property="article:tag" content="binary">
+<meta property="article:tag" content="CG">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://passant1.top/images%5Crgs2head.png">
 
-<link rel="canonical" href="https://passant1.top/2023/10/06/%E5%85%B3%E4%BA%8E%E4%BA%8C%E8%BF%9B%E5%88%B6/">
+<link rel="canonical" href="https://passant1.top/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/">
 
 
 <script id="page-configurations">
@@ -125,7 +126,7 @@ mjx-container {
   }, true);
 })();
 </script>
-  <title>关于二进制 | 路人乙の小窝</title>
+  <title>软光栅渲染器（二） Triangle rasterization | 路人乙の小窝</title>
   
 
 
@@ -247,7 +248,7 @@ mjx-container {
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="https://passant1.top/2023/10/06/%E5%85%B3%E4%BA%8E%E4%BA%8C%E8%BF%9B%E5%88%B6/">
+    <link itemprop="mainEntityOfPage" href="https://passant1.top/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -260,7 +261,7 @@ mjx-container {
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          关于二进制
+          软光栅渲染器（二） Triangle rasterization
         </h1>
 
         <div class="post-meta">
@@ -269,16 +270,10 @@ mjx-container {
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">发表于</span>
+              
 
-              <time title="创建时间：2023-10-06 10:26:24" itemprop="dateCreated datePublished" datetime="2023-10-06T10:26:24+08:00">2023-10-06</time>
+              <time title="创建时间：2025-08-09 09:30:24 / 修改时间：10:38:50" itemprop="dateCreated datePublished" datetime="2025-08-09T09:30:24+08:00">2025-08-09</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">更新于</span>
-                <time title="修改时间：2025-08-08 23:03:15" itemprop="dateModified" datetime="2025-08-08T23:03:15+08:00">2025-08-08</time>
-              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -300,87 +295,55 @@ mjx-container {
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>学习二进制及相关运算是计算机学习的重要部分。为了解决我在学习汇编时遇到的问题，我想在这篇博客中梳理并巩固之前所学习的二进制内容，从而更好的往下学习。</p>
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>在上一课我们已经实现了3d模型的线框渲染，现在我们希望为他填色，也就是说每个三角形都是实心的。</p>
 <hr>
 <span id="more"></span>
 
-<h2 id="进制"><a href="#进制" class="headerlink" title="进制"></a>进制</h2><blockquote>
-<p>进位制又称进制，是一种记数方式，亦称位置记法（positional notation）、数字命位法、定位记法、进位记数法、位值记数法（place-value notation）、位置数值系统（positional numeral system）；利用这种“记数法”，可以使用有限种“数字符号”来表示所有的数值。<br>– wikipedia</p>
+<h2 id="问题简化"><a href="#问题简化" class="headerlink" title="问题简化"></a>问题简化</h2><p>为了完成这一目的，先来考虑一个简单的子问题：如何绘制一个三角形？</p>
+<p>我们用类似上一章的参数结构，给定三个点的坐标，一个TGAImage的引用，以及一个颜色，要求绘制一个实心的三角形</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">triangle</span><span class="params">(Point p0, Point p1, Point p2, TGAImage&amp; img, TGAColor color)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// <span class="doctag">TODO:</span></span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>obj格式的模型提供了顶点的三维坐标和每个三角形所的三个顶点的索引，在上一节课我们已经能够成功的将obj格式模型转化为我们自己定义的model类，如果有这样一个可以绘制三角形的函数，我们绘制模型中的每一个三角形，就可以得到一个完整的模型。</p>
+<h2 id="方法一-Scanline-rasterization"><a href="#方法一-Scanline-rasterization" class="headerlink" title="方法一 Scanline rasterization"></a>方法一 Scanline rasterization</h2><p>参考上一章节绘制线段的想法，我们在区间[x0, x1]中遍历x（或者遍历y，这里以x为例），计算相应的y，并在屏幕中绘制。此时我们是将线段拆成了一个个像素。同样的，对于一个三角形，我们可以遍历y，然后计算出每个y值对应的x0和x1，绘制对应的线段，由一段段线段构成我们所需要的三角形。</p>
+<p>这就是传统的扫描线做法。</p>
+<ol>
+<li>将三角形三个点按照y坐标升序排列（可以用冒泡排序很快完成）；</li>
+<li>在第二个点处水平分割三角形，应该能得到两个三角形；</li>
+<li>分别在两个三角形处计算边界，填充像素。</li>
+</ol>
+<p>扫描线做法原理很简单，看上去也不难，但实际写起来会有很多细节和繁琐的计算。</p>
+<h2 id="方法二-Modern-rasterization-approach"><a href="#方法二-Modern-rasterization-approach" class="headerlink" title="方法二 Modern rasterization approach"></a>方法二 Modern rasterization approach</h2><p>对于任何一个三角形，我们可以找到一个AABB（轴对齐包围盒）将其包裹住，我们可以遍历AABB中的每一个像素，判断其是否在三角形内部，如果是，则将该点像素填色。</p>
+<p>这个方法看上去比扫描线更容易理解，但是看上去会对更多点产生判断，为什么现代更多用这种方法？</p>
+<blockquote>
+<p>:bulb:<strong>提示：</strong></p>
+<p><strong>AABB（Axis-Aligned Bounding Box）方法</strong> 比传统扫描线方法快，核心原因在于 <strong>计算范围更集中，逻辑更简单，内存访问模式更高效</strong>。</p>
+<blockquote>
+<p>Massively parallel computations running in thousands of threads, even on regular consumer hardware, fundamentally change the way we approach problems.</p>
 </blockquote>
-<p>我们日常生活中使用十进制进行计算，即为逢十进一，因为一个正常人的手指头为十根，方便我们计数。但是我们在学习其他进制时不需要割去自己的手指，或用上我们的脚趾。</p>
-<p>古巴比伦人使用六十进制计算，时至今日仍用作记录 <em>时间， 角度</em> 等。</p>
-<p>一进制以1为底数， 与其他进制不同，一进制只有数字 <strong>‘1’</strong>， 无法恰当的表示数字<strong>0</strong>。</p>
-<p>而计算机使用二进制， 以 <strong>0和1</strong> 表示， 方便电路信号模拟数字。</p>
-<h2 id="进制转换"><a href="#进制转换" class="headerlink" title="进制转换"></a>进制转换</h2><p>我们计算时使用十进制，但计算机使用二进制。为了与计算机更好的交流，我们需要使用到<strong>进制转换</strong>：</p>
-<h3 id="N进制-十进制："><a href="#N进制-十进制：" class="headerlink" title="N进制 -&gt; 十进制："></a>N进制 -&gt; 十进制：</h3><p>譬如将二进制数转化为十进制数，将二进制数每一位乘上位权，再乘上这一位的数字，最后相加得到十进制数：</p>
+<p>在扫描线算法中，不同行的扫描是有顺序存在的。但在AABB算法中，所有点之间没有依赖，可以并行计算加速。</p>
+</blockquote>
+<p>所以现在我们有一个更简单，更好理解，更好写代码的方法可以实现三角形的绘制。我们只需要计算minx、miny、maxx、maxy，然后在这个范围内枚举(x, y)即可。</p>
+<p>下一个问题：如何判断某个像素点<code>p</code>要不要填色？（如何判断像素点<code>p</code>是否在三角形内？）</p>
+<p>考虑重心坐标</p>
+<ol>
+<li>$P &#x3D; \alpha A + \beta B + \gamma C$，如果 $\alpha,\ \beta,\ \gamma$ 中存在任意一者为负数，则认为P不在三角形内；</li>
+<li>三个参数可以由子三角形的面积除以整个三角形的面积得到；</li>
+<li>三角形的面积可以利用向量叉乘去求。</li>
+</ol>
+<p>三角形面积：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">float</span> <span class="title">signed_area</span><span class="params">(Point p0, Point p1, Point p2)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">return</span> <span class="number">.5</span> * (p<span class="number">1.</span>x - p<span class="number">0.</span>x) * (p<span class="number">2.</span>y - p<span class="number">0.</span>y) - <span class="number">.5</span> * (p<span class="number">2.</span>x - p<span class="number">0.</span>x) * (p<span class="number">1.</span>y - p<span class="number">0.</span>y);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-$$
-\begin{align*}
-(1001)_2 &= 2^3 \times 1 + 2^2 \times 0 + 2^1 \times 0 + 2^0 \times 1 = (9)_{10} \\
-\text{同样的：} \\
-(567)_8 &= 8^2 \times 5 + 8^1 \times 6 + 8^0 \times 7 = (375)_{10}
-\end{align*}
-$$
+<p>三个参数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> alpha = <span class="built_in">signed_area</span>(p, p1, p2) / total_area;</span><br><span class="line"><span class="type">float</span> beta 	= <span class="built_in">signed_area</span>(p0, p, p2) / total_area;</span><br><span class="line"><span class="type">float</span> gamma = <span class="built_in">signed_area</span>(p0, p1, p) / total_area;</span><br></pre></td></tr></table></figure>
 
+<p>整个绘制三角形的函数：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="type">void</span> <span class="title">triangle</span><span class="params">(Point p0, Point p1, Point p2, TGAImage&amp; img, TGAColor color)</span> </span>&#123;	<span class="comment">// 绘制三角形</span></span><br><span class="line">	<span class="type">int</span> minx = std::<span class="built_in">min</span>(&#123;p<span class="number">0.</span>x, p<span class="number">1.</span>x, p<span class="number">2.</span>x&#125;);</span><br><span class="line">	<span class="type">int</span> maxx = std::<span class="built_in">max</span>(&#123;p<span class="number">0.</span>x, p<span class="number">1.</span>x, p<span class="number">2.</span>x&#125;);</span><br><span class="line">	<span class="type">int</span> miny = std::<span class="built_in">min</span>(&#123;p<span class="number">0.</span>y, p<span class="number">1.</span>y, p<span class="number">2.</span>y&#125;);</span><br><span class="line">	<span class="type">int</span> maxy = std::<span class="built_in">max</span>(&#123;p<span class="number">0.</span>y, p<span class="number">1.</span>y, p<span class="number">2.</span>y&#125;);</span><br><span class="line"></span><br><span class="line">	<span class="type">float</span> total_area = <span class="built_in">signed_area</span>(p0, p1, p2);</span><br><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> x = minx; x &lt;= maxx; ++x) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> y = miny; y &lt;= maxy; ++y) &#123;</span><br><span class="line">			<span class="function">Point <span class="title">p</span><span class="params">(x, y)</span></span>;</span><br><span class="line">			<span class="type">float</span> alpha = <span class="built_in">signed_area</span>(p, p1, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> beta 	= <span class="built_in">signed_area</span>(p0, p, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> gamma = <span class="built_in">signed_area</span>(p0, p1, p) / total_area;</span><br><span class="line">			<span class="keyword">if</span>(alpha &lt; <span class="number">0</span> || beta &lt; <span class="number">0</span> || gamma &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			img.<span class="built_in">set</span>(x, y, color);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-<h3 id="十进制-N进制："><a href="#十进制-N进制：" class="headerlink" title="十进制-&gt;N进制："></a>十进制-&gt;N进制：</h3><p>将十进制数转换为其他进制数，很方便的一个方法是短除法。</p>
-<p>例如将十进制转换为二进制：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">185 / 2 = 92 ...... 1</span><br><span class="line">92  / 2 = 46 ...... 0</span><br><span class="line">46  / 2 = 23 ...... 0</span><br><span class="line">23  / 2 = 11 ...... 1</span><br><span class="line">11  / 2 = 5  ...... 1</span><br><span class="line">5   / 2 = 2  ...... 1</span><br><span class="line">2   / 2 = 1  ...... 0</span><br><span class="line">1   / 2 = 1  ...... 1</span><br></pre></td></tr></table></figure>
-
-<p>将余数从下向上读，<br>从而我们得到了 $$(185)_{10} = (10111001)_2$$</p>
-<p>同样的：</p>
-<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">185 / 8 = 23 ...... 1</span><br><span class="line">23  / 8 = 2  ...... 7</span><br><span class="line">2   / 8 = 0  ...... 2</span><br></pre></td></tr></table></figure>
-
-<p>所以有$$(185)_{10} = (271)_8$$</p>
-<h2 id="数字的存储方式"><a href="#数字的存储方式" class="headerlink" title="数字的存储方式"></a>数字的存储方式</h2><p>我们使用十进制运算，而计算机使用二进制。所以我们需要将数字以二进制的形式存入计算机。</p>
-<p>显然，对于一个正数或一个无符号数，我们只需要将其转化为二进制存入计算机即可</p>
-<p>但对于一个负数，我们需要一些特殊的办法使其能够存入计算机，并且能够正常运算。</p>
-<h3 id="位（bit）"><a href="#位（bit）" class="headerlink" title="位（bit）"></a>位（bit）</h3><p>位是信息的最小单位，一位只能表示 <strong>0或1</strong>。</p>
-<h3 id="符号位和原码"><a href="#符号位和原码" class="headerlink" title="符号位和原码"></a>符号位和原码</h3><p>为了表示一个二进制数的正负，我们令这个数字的第一位为符号位，0即为正，1即为负。符号位只表示这个数的正负，不改变它的绝对值。</p>
-<p>例如，$$(-3)_{10} = (1000\ 0011)_2$$<br>这样我们可以用二进制表示一个负数。<br>同样：</p>
-$$(3)_{10} = (0000\ 0011)_2$$
-<p>这里的1000 0011和0000 0011都为原码，原码即未经更改的码。</p>
-<h3 id="反码"><a href="#反码" class="headerlink" title="反码"></a>反码</h3><p>原码只能用来表示一个数，不能直接进行参与运算，原码的符号位必须与其他位分离开，这样做增加了硬件的开销和复杂性。</p>
-<p>对于一个简单的 $1 + (-1) &#x3D; 0$</p>
-<p>当我们使用原码计算：$$(0000\ 0001)_2 + (0000\ 0001)_2 = (1000 0010)_2 = (-2)_{10} \neq 0$$</p>
-<p>显然我们得到了一个错误答案。</p>
-<p>为了进行正确的运算，<strong>反码</strong>应运而生，一个正二进制数的反码即为它本身，而对于一个负数，它的反码为将它除符号位以外所有的位取反得到的结果。</p>
-<p>例如：</p>
-$$(0010\ 1001)_原 = (0010\ 1001)_反$$
-
-$$(1010\ 1001)_原 = (1101\ 0110)_反$$
-<p>对于运算$1 + (-2) &#x3D; -1$ :</p>
-$$(0000\ 0001)_反 + (1111\ 1101)_反 = (1111\ 1110)_反 = (1000\ 0001)_原 = -1$$
-
-<h3 id="补码"><a href="#补码" class="headerlink" title="补码"></a>补码</h3><p>运用反码，我们已经基本可以进行正确的运算了。但是对于之前提到的运算$1 + (-1) &#x3D; 0$  :</p>
-$$(0000\ 0001)_补 + (1111\ 1111)_补 = (0000\ 0000)_补 = 0$$
-<p>因为<em>1111 1111</em>的符号位为1，所以得到最终结果为-0，但我们又知道0的符号是没有意义的，所以为了解决0的两个编码的问题，我们引入了补码。</p>
-<p>正数的补码是它本身，而负数的补码是它的反码 + 1。</p>
-<p>例如：</p>
-$$(0000\ 1001)_原 = (0000\ 1001)_补 $$
-$$(1000\ 1001)_原 = (1111\ 0110)_反 = (1111\ 0111)_补$$
-<p>此时我们计算$1 + (-1) &#x3D; 0$ :</p>
-$$(0000\ 0001)_补 + (1111\ 1111)_补 = (0000\ 0000)_补 = 0$$
-<p>从而，我们在解决0的不同编码问题的同时，得到了正确答案。<br>同时，我们用1000 0000表示-128而非-0。</p>
-<p>所以用补码存储数据时，一个八位数的数据范围为$[-128, 127]$，而当用原码或反码存储时，数据范围为$[-127, 127]$ 。</p>
-<h2 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h2><p>位运算对我们来说可能比较麻烦，但对计算机来说，一次位运算要进行的操作数远少于一次加法或其他运算。</p>
-<h3 id="与（and-）"><a href="#与（and-）" class="headerlink" title="与（and, &amp;）:"></a>与（and, &amp;）:</h3><p>对两个二进制的每一位进行运算， 当两位数都为<strong>1</strong>时，运算结果为1， 否则为0。</p>
-$$(1011\ 0010)_2 \ \&\  (0010\ 0101)_2 = (0010\ 0000)_2$$
-
-<h3 id="或（or-）"><a href="#或（or-）" class="headerlink" title="或（or, |）:"></a>或（or, |）:</h3><p>对两个二进制的每一位进行运算， 当两位数都为<strong>0</strong>时，运算结果为0，否则为1。</p>
-$$(1011\ 0010)_2 \ |\ (0010\ 0101)_2 = (1011\ 0111)_2$$
-<h3 id="亦或（xor-）"><a href="#亦或（xor-）" class="headerlink" title="亦或（xor, ^）:"></a>亦或（xor, ^）:</h3><p>对两个二进制的每一位进行运算，当两位数不同时，运算结果为1，否则为0。</p>
-$$(1011\ 0010)_2 \wedge (0010\ 0101)_2 = (1001\ 0111)_2$$
-
-<h3 id="非（not，-）："><a href="#非（not，-）：" class="headerlink" title="非（not，~）："></a>非（not，~）：</h3><p>对一个二进制数的每一位，将1变为0， 0变为1。</p>
-$$\sim(1011\ 0010)_2 = (0100\ 1101)_2$$
-
-<h3 id="左移（shl"><a href="#左移（shl" class="headerlink" title="左移（shl, &lt;&lt;）:"></a>左移（shl, &lt;&lt;）:</h3><p>将二进制数<strong>补码</strong>每一位左移一定位数，位移舍弃最高位，低位补0，对二进制数左移一次相当于将这个数乘2。</p>
-$$(1001\ 0010)_原 << \ 1 = (1110\ 1110)_补 << 1 = (1101\ 1100)_补 = (1010\ 0100)_原$$
-<h3 id="右移（shr-）"><a href="#右移（shr-）" class="headerlink" title="右移（shr, &gt;&gt;）:"></a>右移（shr, &gt;&gt;）:</h3><p>与左移相反，向右位移，舍弃低位，高位补符号位。对二进制数右移一次相当于将这个数除以2，向下取整</p>
-$$(1001\ 0010)_原 >> 2 = (1110\ 1110)_补 >> 2 = (1111\ 1011)_补 = (1000\ 0101)_原$$
-<p>（ps：c++中整数除法也会自动取整，但 ‘ \ ‘为向零整除，右移运算为向下整除）</p>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p>现在回头看看之前的线框渲染的作业，因为涂成纯色也不合适，为了更好的观察一眼效果，我们可以对每个三角形随机填色。</p>
+<p>结果如下图：</p>
+<p><img src="/images%5Crgs2head.png" alt="image"></p>
+<p>其实可以看到面部有很多错误，这是因为很多背面的面片被错误覆盖到了正面之上，这一错误会在下次课被改正。</p>
+<p>这一章节涉及到的数学有关内容，可以在<a target="_blank" rel="noopener" href="https://haqr.eu/tinyrenderer/barycentric/">wiki页面</a>找到ssloy大神给出的一些解释。</p>
 
     </div>
 
@@ -410,8 +373,7 @@ $$(1001\ 0010)_原 >> 2 = (1110\ 1110)_补 >> 2 = (1111\ 1011)_补 = (1000\ 0101
 
       <footer class="post-footer">
           <div class="post-tags">
-              <a href="/tags/math/" rel="tag"># math</a>
-              <a href="/tags/binary/" rel="tag"># binary</a>
+              <a href="/tags/CG/" rel="tag"># CG</a>
           </div>
 
         
@@ -420,13 +382,10 @@ $$(1001\ 0010)_原 >> 2 = (1110\ 1110)_补 >> 2 = (1111\ 1011)_补 = (1000\ 0101
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2023/08/14/c++%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%87%BD%E6%95%B0%E7%9A%84%E6%95%B4%E7%90%86/" rel="prev" title="c++字符串函数的整理">
-      <i class="fa fa-chevron-left"></i> c++字符串函数的整理
+    <a href="/2025/08/08/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%80%EF%BC%89-Bresenham%E2%80%99s-Line-Drawing-Algorithm/" rel="prev" title="软光栅渲染器（一） Bresenham’s Line Drawing Algorithm">
+      <i class="fa fa-chevron-left"></i> 软光栅渲染器（一） Bresenham’s Line Drawing Algorithm
     </a></div>
-      <div class="post-nav-item">
-    <a href="/2024/01/16/P1966%20%5BNOIP2013%20%E6%8F%90%E9%AB%98%E7%BB%84%5D%20%E7%81%AB%E6%9F%B4%E6%8E%92%E9%98%9F/" rel="next" title="火柴排队">
-      火柴排队 <i class="fa fa-chevron-right"></i>
-    </a></div>
+      <div class="post-nav-item"></div>
     </div>
       </footer>
     
@@ -485,7 +444,7 @@ $$(1001\ 0010)_原 >> 2 = (1110\ 1110)_补 >> 2 = (1111\ 1011)_补 = (1000\ 0101
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%88%B6"><span class="nav-text">进制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9B%E5%88%B6%E8%BD%AC%E6%8D%A2"><span class="nav-text">进制转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#N%E8%BF%9B%E5%88%B6-%E5%8D%81%E8%BF%9B%E5%88%B6%EF%BC%9A"><span class="nav-text">N进制 -&gt; 十进制：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8D%81%E8%BF%9B%E5%88%B6-N%E8%BF%9B%E5%88%B6%EF%BC%9A"><span class="nav-text">十进制-&gt;N进制：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%AD%97%E7%9A%84%E5%AD%98%E5%82%A8%E6%96%B9%E5%BC%8F"><span class="nav-text">数字的存储方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%8D%EF%BC%88bit%EF%BC%89"><span class="nav-text">位（bit）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AC%A6%E5%8F%B7%E4%BD%8D%E5%92%8C%E5%8E%9F%E7%A0%81"><span class="nav-text">符号位和原码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%8D%E7%A0%81"><span class="nav-text">反码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A5%E7%A0%81"><span class="nav-text">补码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="nav-text">位运算</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8E%EF%BC%88and-%EF%BC%89"><span class="nav-text">与（and, &amp;）:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%88%96%EF%BC%88or-%EF%BC%89"><span class="nav-text">或（or, |）:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%A6%E6%88%96%EF%BC%88xor-%EF%BC%89"><span class="nav-text">亦或（xor, ^）:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%EF%BC%88not%EF%BC%8C-%EF%BC%89%EF%BC%9A"><span class="nav-text">非（not，~）：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B7%A6%E7%A7%BB%EF%BC%88shl"><span class="nav-text">左移（shl, &lt;&lt;）:</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%B3%E7%A7%BB%EF%BC%88shr-%EF%BC%89"><span class="nav-text">右移（shr, &gt;&gt;）:</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98%E7%AE%80%E5%8C%96"><span class="nav-text">问题简化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%B8%80-Scanline-rasterization"><span class="nav-text">方法一 Scanline rasterization</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%96%B9%E6%B3%95%E4%BA%8C-Modern-rasterization-approach"><span class="nav-text">方法二 Modern rasterization approach</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%9C"><span class="nav-text">结果</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
