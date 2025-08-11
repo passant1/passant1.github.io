@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.3.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/rice_large.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/rice_small.png">
+  <link rel="mask-icon" href="/images/%E7%B1%B3%E9%A5%ADsmall.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"passant1.top","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"enable":false,"style":"tabs","active":false,"storage":true,"lazyload":false},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":false,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前言上节课我们实现了三角形的光栅化，但是在渲染整个模型时，可以看到有很多不知道怎么形容的错误，即使我们没有使用正确的纹理，我们能看出来它的结构有很大的问题，只是因为我们错误渲染了很多应当被隐藏的面。 Z-Buffer算法用于解决这一问题。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="软光栅渲染器（三） Hidden faces removal (z buffer)">
+<meta property="og:url" content="https://passant1.top/2025/08/11/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89-Hidden-faces-removal-z-buffer/index.html">
+<meta property="og:site_name" content="路人乙の小窝">
+<meta property="og:description" content="前言上节课我们实现了三角形的光栅化，但是在渲染整个模型时，可以看到有很多不知道怎么形容的错误，即使我们没有使用正确的纹理，我们能看出来它的结构有很大的问题，只是因为我们错误渲染了很多应当被隐藏的面。 Z-Buffer算法用于解决这一问题。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://passant1.top/..%5Cimages%5Cpainter.svg">
+<meta property="og:image" content="https://passant1.top/%5Cimages%5Cdiablo3_pose_gray.png">
+<meta property="og:image" content="https://passant1.top/images%5Cgray_perfect.png">
+<meta property="og:image" content="https://passant1.top/images%5Cahcolor.png">
+<meta property="og:image" content="https://passant1.top/images%5Ctexture.png">
+<meta property="og:image" content="https://passant1.top/images%5Cpah.png">
+<meta property="article:published_time" content="2025-08-11T06:43:14.000Z">
+<meta property="article:modified_time" content="2025-08-11T07:35:43.251Z">
+<meta property="article:author" content="路人乙">
+<meta property="article:tag" content="CG">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://passant1.top/..%5Cimages%5Cpainter.svg">
+
+<link rel="canonical" href="https://passant1.top/2025/08/11/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89-Hidden-faces-removal-z-buffer/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+<link rel="preload" href="/fonts/LXGWWenKaiGBScreenR.ttf" as="font" type="font/ttf" crossorigin>
+
+<!-- Do not pre-define window.MathJax here, to let NexT inject MathJax script properly -->
+
+<style>
+@font-face {
+  font-family: "LXGWWenKaiGBScreenR";
+  src: url("/fonts/LXGWWenKaiGBScreenR.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --font-family-base: "LXGWWenKaiGBScreenR", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
+
+body, .post-body {
+  font-family: var(--font-family-base);
+}
+
+mjx-container {
+  overflow-x: auto;
+  overflow-y: hidden;
+  max-width: 100%;
+}
+
+.post-body mjx-container {
+  overflow: visible !important;
+  text-align: center;
+  margin: 1em 0;
+  padding: 0;
+  white-space: normal;
+  min-width: 0 !important;
+}
+
+.post-body mjx-container:not([display="true"]) {
+  display: inline-block !important;
+  text-align: initial;
+  margin: 0;
+  vertical-align: middle;
+}
+
+.post-body mjx-container[display="true"] {
+  display: block !important;
+  margin: 1em auto;
+}
+
+/* Preloader overlay */
+#site-preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(1200px 600px at 20% 10%, rgba(136,207,219,.25), transparent 60%),
+              radial-gradient(1000px 500px at 80% 90%, rgba(34,42,48,.08), transparent 60%),
+              linear-gradient(180deg, #fff, #f7f7f7);
+  transition: opacity .3s ease, visibility .3s ease;
+}
+#site-preloader.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+#site-preloader .preloader-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+}
+#site-preloader .preloader-logo {
+  font-family: var(--font-family-base, system-ui, -apple-system, Segoe UI, Arial, sans-serif);
+  font-size: 20px;
+  letter-spacing: .12em;
+  color: #222;
+  opacity: .9;
+}
+#site-preloader .preloader-dots {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 14px;
+}
+#site-preloader .preloader-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #222;
+  opacity: .25;
+  animation: preloader-dot 1s ease-in-out infinite;
+}
+#site-preloader .preloader-dots span:nth-child(1) { animation-delay: 0s; }
+#site-preloader .preloader-dots span:nth-child(2) { animation-delay: .1s; }
+#site-preloader .preloader-dots span:nth-child(3) { animation-delay: .2s; }
+#site-preloader .preloader-dots span:nth-child(4) { animation-delay: .3s; }
+#site-preloader .preloader-dots span:nth-child(5) { animation-delay: .4s; }
+@keyframes preloader-dot {
+  0%, 100% { transform: translateY(0); opacity: .25; }
+  50% { transform: translateY(-8px); opacity: .9; }
+}
+@media (prefers-reduced-motion: reduce) {
+  #site-preloader .preloader-dots span { animation: none; opacity: .6; }
+}
+</style>
+
+<!-- Preloader -->
+<div id="site-preloader" aria-hidden="true" role="status">
+  <div class="preloader-inner">
+    <div class="preloader-logo">Loading • 路人乙の小窝</div>
+    <div class="preloader-dots" aria-label="Loading">
+      <span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+</div>
+
+<script>
+// Show preloader immediately on navigation away
+(function(){
+  var pre = document.getElementById('site-preloader');
+  function show(){ if (pre) { pre.classList.remove('hidden'); } }
+  window.addEventListener('beforeunload', show);
+  document.addEventListener('click', function(e){
+    var a = e.target.closest && e.target.closest('a[href]');
+    if (!a) return;
+    var url = a.getAttribute('href');
+    if (!url || url.startsWith('#') || a.target === '_blank' || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    try {
+      var u = new URL(url, location.href);
+      if (u.origin === location.origin) {
+        pre && pre.classList.remove('hidden');
+      }
+    } catch(_){}
+  }, true);
+})();
+</script>
+  <title>软光栅渲染器（三） Hidden faces removal (z buffer) | 路人乙の小窝</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">路人乙の小窝</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">我若安好，万事大吉</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://passant1.top/2025/08/11/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89-Hidden-faces-removal-z-buffer/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="路人乙">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="路人乙の小窝">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          软光栅渲染器（三） Hidden faces removal (z buffer)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2025-08-11 14:43:14 / 修改时间：15:35:43" itemprop="dateCreated datePublished" datetime="2025-08-11T14:43:14+08:00">2025-08-11</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/study/" itemprop="url" rel="index"><span itemprop="name">study</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><a target="_blank" rel="noopener" href="https://www.passant1.top/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/#more">上节课</a>我们实现了三角形的光栅化，但是在渲染整个模型时，可以看到有很多<del>不知道怎么形容的</del>错误，即使我们没有使用正确的纹理，我们能看出来它的结构有很大的问题，只是因为我们错误渲染了很多应当被隐藏的面。</p>
+<p>Z-Buffer算法用于解决这一问题。</p>
+<hr>
+<span id="more"></span>
+
+<h2 id="Painter’s-algorithm"><a href="#Painter’s-algorithm" class="headerlink" title="Painter’s algorithm"></a>Painter’s algorithm</h2><p>如果我们将所有的三角形排序后渲染，那么后渲染的三角形理所应当会覆盖之前绘制的三角形，我们就可以看到一个正常显示的模型。</p>
+<p>但是这么说起来还是太理想了，有下面几个问题：</p>
+<ol>
+<li>如何对三角形进行排序？仅仅按照<code>z最大值/平均值</code>或者其他关键字？</li>
+<li>如何处理三角形相交的问题？如果三角形A的一部分被B遮挡，而三角形A的另一部分遮挡了B，画家算法可以绘制出正确的图像吗(如下图，来源于tinyrenderer wiki)？</li>
+</ol>
+<p>除了上面两个影响正确性的问题，画家算法伴随着高昂的计算成本。对于动态场景&#x2F;静态场景内视角变化，我们需要每次重新对三角形排序。</p>
+<p><img src="/..%5Cimages%5Cpainter.svg" alt="img"></p>
+<h2 id="Depth-interpolation"><a href="#Depth-interpolation" class="headerlink" title="Depth interpolation"></a>Depth interpolation</h2><p>深度插值并不是直接解决伪影的办法，它可以看作z-buffer的理论基础。在上节课，为了判断像素点是否在三角形内，我们得到了每个点的重心坐标。我们根据 $\alpha,\ \beta,\ \gamma$ 将像素点的颜色插值为三角形点的z坐标加权和，即：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> x = minx; x &lt;= maxx; ++x) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> y = miny; y &lt;= maxy; ++y) &#123;</span><br><span class="line">			<span class="function">Point <span class="title">p</span><span class="params">(x, y)</span></span>;</span><br><span class="line">			<span class="type">float</span> alpha = <span class="built_in">signed_area</span>(p, p1, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> beta 	= <span class="built_in">signed_area</span>(p0, p, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> gamma = <span class="built_in">signed_area</span>(p0, p1, p) / total_area;</span><br><span class="line">			<span class="type">unsigned</span> <span class="type">char</span> z = alpha * p<span class="number">0.</span>z + beta * p<span class="number">1.</span>z + gamma * p<span class="number">2.</span>z;</span><br><span class="line">			<span class="keyword">if</span>(alpha &lt; <span class="number">0</span> || beta &lt; <span class="number">0</span> || gamma &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			zbuffer.<span class="built_in">set</span>(x, y, &#123;z&#125;);</span><br><span class="line">			img.<span class="built_in">set</span>(x, y, color);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们可以绘制深度图像如下:</p>
+<p><img src="/%5Cimages%5Cdiablo3_pose_gray.png" alt="image-20250811150751140"></p>
+<p>可以从图片上看出伪影还是很严重的。</p>
+<h2 id="Per-pixel-painter’s-algorithm-a-k-a-z-buffer"><a href="#Per-pixel-painter’s-algorithm-a-k-a-z-buffer" class="headerlink" title="Per-pixel painter’s algorithm (a.k.a. z-buffer)"></a>Per-pixel painter’s algorithm (a.k.a. z-buffer)</h2><p>看看下面一段代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">pragma</span> omp parallel for</span></span><br><span class="line">	<span class="keyword">for</span>(<span class="type">int</span> x = minx; x &lt;= maxx; ++x) &#123;</span><br><span class="line">		<span class="keyword">for</span>(<span class="type">int</span> y = miny; y &lt;= maxy; ++y) &#123;</span><br><span class="line">			<span class="function">Point <span class="title">p</span><span class="params">(x, y)</span></span>;</span><br><span class="line">			<span class="type">float</span> alpha = <span class="built_in">signed_area</span>(p, p1, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> beta 	= <span class="built_in">signed_area</span>(p0, p, p2) / total_area;</span><br><span class="line">			<span class="type">float</span> gamma = <span class="built_in">signed_area</span>(p0, p1, p) / total_area;</span><br><span class="line">			<span class="type">unsigned</span> <span class="type">char</span> z = alpha * p<span class="number">0.</span>z + beta * p<span class="number">1.</span>z + gamma * p<span class="number">2.</span>z;</span><br><span class="line">			<span class="keyword">if</span>(alpha &lt; <span class="number">0</span> || beta &lt; <span class="number">0</span> || gamma &lt; <span class="number">0</span>) <span class="keyword">continue</span>;</span><br><span class="line">			<span class="keyword">if</span>(zbuffer.<span class="built_in">get</span>(x, y)[<span class="number">0</span>] &gt;= z) <span class="keyword">continue</span>;</span><br><span class="line">			zbuffer.<span class="built_in">set</span>(x, y, &#123;z&#125;);</span><br><span class="line">			img.<span class="built_in">set</span>(x, y, color);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<p><img src="/images%5Cgray_perfect.png" alt="image-20250811151342480"></p>
+<p>可以看到运行结果有了极大的改善。为什么？</p>
+<p>在深度插值算法中，我们对于每个三角形中的每个像素计算了一次深度。我们可以把这个深度存在一张单独的图片（zbuffer）中。在下一次计算这个像素的深度值时，我们将新的深度与buffer中的深度作比较，只有当<code>zbuffer.get(x, y)[0] &lt; z</code>时才更新这个像素。</p>
+<p>我们用同一套程序，还是随机填色，来更新上节课渲染的模型：</p>
+<p><img src="/images%5Cahcolor.png" alt="image-20250811152657896"></p>
+<p>已经看不到伪影了。</p>
+<h2 id="作业：Texture"><a href="#作业：Texture" class="headerlink" title="作业：Texture"></a>作业：Texture</h2><p>ssloy大神在v1的wiki中在这一章布置了添加纹理的作业，并提供了纹理贴图。</p>
+<p><img src="/images%5Ctexture.png" alt="image-20250811153500492"></p>
+<p>在obj格式模型以f开头的行，形如<code>f 1/2/3 4/5/6 7/8/9</code>中，我们之前使用的<code>1 4 7</code>为点坐标，而<code>2 5 8</code>对应的就是纹理坐标。</p>
+<p>在模型读取函数中稍作修改，并保存每个三角形顶点的纹理坐标，那么只需要用同样的插值方法，我们就可以得到每个像素点对应的uv坐标。将这个uv坐标映射到纹理图像坐标上，可以取到纹理图像中的一个像素点，这个像素点就是最终的填色。</p>
+<p>获取这个颜色的代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">float</span> u = p<span class="number">0.</span>u * alpha + p<span class="number">1.</span>u * beta + p<span class="number">2.</span>u * gamma;</span><br><span class="line"><span class="type">float</span> v = p<span class="number">0.</span>v * alpha + p<span class="number">1.</span>v * beta + p<span class="number">2.</span>v * gamma;</span><br><span class="line"><span class="type">int</span> tx = u * (texture.<span class="built_in">width</span>() - <span class="number">1</span>);</span><br><span class="line"><span class="type">int</span> ty = v * (texture.<span class="built_in">height</span>() - <span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">img.<span class="built_in">set</span>(x, y, texture.<span class="built_in">get</span>(tx, ty));</span><br></pre></td></tr></table></figure>
+
+<p>运行效果：</p>
+<p><img src="/images%5Cpah.png" alt="image-20250811153336006"></p>
+<p>我们得到了比较完美的图像（他看上去没有眼睛，但实际上ssloy大神提供的模型就是没有眼睛的）。</p>
+
+    </div>
+
+    
+    
+    
+        <div class="reward-container">
+  <div>我很可爱，请给我钱qwq</div>
+  <button onclick="var qr = document.getElementById('qr'); qr.style.display = (qr.style.display === 'none') ? 'block' : 'none';">
+    打赏
+  </button>
+  <div id="qr" style="display: none;">
+      
+      <div style="display: inline-block;">
+        <img src="/images/wechat.png" alt="路人乙 微信支付">
+        <p>微信支付</p>
+      </div>
+      
+      <div style="display: inline-block;">
+        <img src="/images/alipay.jpg" alt="路人乙 支付宝">
+        <p>支付宝</p>
+      </div>
+
+  </div>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/CG/" rel="tag"># CG</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/" rel="prev" title="软光栅渲染器（二） Triangle rasterization">
+      <i class="fa fa-chevron-left"></i> 软光栅渲染器（二） Triangle rasterization
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Painter%E2%80%99s-algorithm"><span class="nav-text">Painter’s algorithm</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Depth-interpolation"><span class="nav-text">Depth interpolation</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Per-pixel-painter%E2%80%99s-algorithm-a-k-a-z-buffer"><span class="nav-text">Per-pixel painter’s algorithm (a.k.a. z-buffer)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%9C%E4%B8%9A%EF%BC%9ATexture"><span class="nav-text">作业：Texture</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="路人乙"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">路人乙</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">26</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">25</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/passant1" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;passant1" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:passerby_1@outlook.com" title="E-Mail → mailto:passerby_1@outlook.com" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=2048373239&website=www.oicqzone.com" title="QQ → tencent:&#x2F;&#x2F;AddContact&#x2F;?fromId&#x3D;45&amp;fromSubId&#x3D;1&amp;subcmd&#x3D;all&amp;uin&#x3D;2048373239&amp;website&#x3D;www.oicqzone.com" rel="noopener" target="_blank"><i class="fab fa-qq fa-fw"></i>QQ</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.luogu.com.cn/user/144779" title="luogu → https:&#x2F;&#x2F;www.luogu.com.cn&#x2F;user&#x2F;144779" rel="noopener" target="_blank"><i class="fa fa-code fa-fw"></i>luogu</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2025</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">路人乙</span>
+</div>
+  <div class="powered-by">
+   <!--由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动 -->
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.1.0/lib/anime.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      chtml: {
+        matchFontHeight: false
+      },
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    // If fonts API is available, wait for document fonts to be ready to avoid metric shifts on hard reload
+    var doTypeset = function(){ try { MathJax.typeset(); } catch(e) {} };
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+      document.fonts.ready.then(doTypeset, doTypeset);
+    } else {
+      doTypeset();
+    }
+  }
+</script>
+
+    
+
+  
+<script src="/js/click-effect.js"></script>
+<script src="/js/background-animation.js"></script>
+
+<!-- Lenis smooth scroll (popular, natural feel) -->
+<script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.45/bundled/lenis.min.js"></script>
+<script>
+(function() {
+  var prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced || typeof Lenis === 'undefined') return;
+
+  // Hand-following + faster speed as requested
+  var lenis = new Lenis({
+    smoothWheel: true,
+    smoothTouch: false,
+    lerp: 0.7,
+    wheelMultiplier: 1.8,
+    touchMultiplier: 1.0,
+    normalizeWheel: true
+  });
+
+  function raf(time){
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+  requestAnimationFrame(raf);
+})();
+</script>
+
+<script>
+(function() {
+  var done = false;
+  var pre = document.getElementById('site-preloader');
+  function hide() {
+    if (done || !pre) return;
+    done = true;
+    pre.classList.add('hidden');
+    setTimeout(function(){ pre && pre.remove && pre.remove(); }, 350);
+  }
+  if (document.readyState === 'complete') {
+    hide();
+  } else {
+    window.addEventListener('load', hide, { once: true });
+  }
+  setTimeout(hide, 10000);
+})();
+</script>
+
+</body>
+</html>
