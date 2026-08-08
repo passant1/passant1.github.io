@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  
+  <title>TinyRenderer · CPU 软件光栅器 · 路人乙の小窝</title>
+  <meta name="description" content="用 C++20 实现的学习型 CPU 软件渲染器，展示 Dragon 转台、光栅化阶段成果与当前实现边界。">
+  <meta name="theme-color" content="#F7F4F2">
+  <link rel="canonical" href="https://www.passant1.top/portfolio/tinyrenderer/index.html">
+  <link rel="alternate" type="application/atom+xml" title="路人乙の小窝" href="https://www.passant1.top/atom.xml">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="TinyRenderer · CPU 软件光栅器 · 路人乙の小窝">
+  <meta property="og:description" content="用 C++20 实现的学习型 CPU 软件渲染器，展示 Dragon 转台、光栅化阶段成果与当前实现边界。">
+  <meta property="og:url" content="https://www.passant1.top/portfolio/tinyrenderer/index.html">
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="page-portfolio-detail">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-name" href="/" aria-label="路人乙首页">路人乙の小窝</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span><span class="sr-only">打开导航</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="主导航">
+        
+          
+          <a href="/">首页</a>
+        
+          
+          <a href="/blog/">博客</a>
+        
+          
+          <a href="/archives/">归档</a>
+        
+          
+          <a href="/about/">关于</a>
+        
+      </nav>
+    </div>
+  </header>
+  <main id="main-content">
+
+
+
+<article class="page-shell portfolio-shell project-shell project-detail" data-portfolio-project="tinyrenderer">
+  <nav class="project-breadcrumb" aria-label="面包屑">
+    <a href="/">首页</a>
+    <span aria-hidden="true">/</span>
+    <a href="/portfolio/">作品集</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">TinyRenderer · CPU 软件光栅器</span>
+  </nav>
+
+  <header class="project-hero">
+    <div class="project-hero__copy">
+      <p class="section-kicker">Software Rasterizer</p>
+      <h1>TinyRenderer · CPU 软件光栅器</h1>
+      <p class="project-summary">一个用 C++20 实现的学习型 CPU 软件渲染器，从 OBJ 模型解析开始，完成 MVP 变换、近裁剪、三角形光栅化、Z-buffer、1/w 透视正确插值、纹理采样和 Blinn–Phong 光照。</p>
+      <ul class="portfolio-card__tags project-tags" aria-label="项目技术标签">
+        <li>C++20</li><li>CPU Rendering</li><li>Rasterization</li><li>Z-buffer</li>
+      </ul>
+      <dl class="project-facts">
+        
+        <div><dt>语言</dt><dd>C++20</dd></div>
+        
+        <div><dt>渲染方式</dt><dd>CPU 离线光栅化</dd></div>
+        
+        <div><dt>输出</dt><dd>BMP 图像</dd></div>
+        
+      </dl>
+    </div>
+    <picture class="project-hero__media">
+      <source type="image/avif" srcset="/images/portfolio/tinyrenderer/dragon-hero.avif">
+      <source type="image/webp" srcset="/images/portfolio/tinyrenderer/dragon-hero.webp">
+      <img src="/images/portfolio/tinyrenderer/dragon-hero.jpg" width="1440" height="900" alt="TinyRenderer 离线渲染的 Dragon 模型" fetchpriority="high" decoding="async">
+    </picture>
+  </header>
+
+  <section class="project-section" aria-labelledby="project-overview-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Overview</p><h2 id="project-overview-title">项目简介</h2></div>
+    </div>
+    <div class="project-section__copy">
+      <p>这个项目沿着 TinyRenderer 的教学路线，从读取 OBJ 顶点、纹理坐标和面片开始，逐步把模型变换、裁剪、光栅化、深度测试与着色串成一条可运行的 CPU 渲染管线。</p><p>页面中的 Dragon 转台和阶段图均来自项目的真实离线输出。它是一项以理解渲染流程为目标的练习，不把教程中的方法包装成原创算法，也不以实时性或性能数据作为成果。</p>
+    </div>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-showcase-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Results</p><h2 id="project-showcase-title">真实结果展示</h2></div>
+    </div>
+
+    
+    <figure class="project-turntable" data-turntable data-frames='["/images/portfolio/tinyrenderer/dragon-turntable-000.webp","/images/portfolio/tinyrenderer/dragon-turntable-030.webp","/images/portfolio/tinyrenderer/dragon-turntable-060.webp","/images/portfolio/tinyrenderer/dragon-turntable-090.webp","/images/portfolio/tinyrenderer/dragon-turntable-120.webp","/images/portfolio/tinyrenderer/dragon-turntable-150.webp","/images/portfolio/tinyrenderer/dragon-turntable-180.webp","/images/portfolio/tinyrenderer/dragon-turntable-210.webp","/images/portfolio/tinyrenderer/dragon-turntable-240.webp","/images/portfolio/tinyrenderer/dragon-turntable-270.webp","/images/portfolio/tinyrenderer/dragon-turntable-300.webp","/images/portfolio/tinyrenderer/dragon-turntable-330.webp"]' data-avif-frames='["/images/portfolio/tinyrenderer/dragon-turntable-000.avif","/images/portfolio/tinyrenderer/dragon-turntable-030.avif","/images/portfolio/tinyrenderer/dragon-turntable-060.avif","/images/portfolio/tinyrenderer/dragon-turntable-090.avif","/images/portfolio/tinyrenderer/dragon-turntable-120.avif","/images/portfolio/tinyrenderer/dragon-turntable-150.avif","/images/portfolio/tinyrenderer/dragon-turntable-180.avif","/images/portfolio/tinyrenderer/dragon-turntable-210.avif","/images/portfolio/tinyrenderer/dragon-turntable-240.avif","/images/portfolio/tinyrenderer/dragon-turntable-270.avif","/images/portfolio/tinyrenderer/dragon-turntable-300.avif","/images/portfolio/tinyrenderer/dragon-turntable-330.avif"]' data-fallback-frames='["/images/portfolio/tinyrenderer/dragon-turntable-000.jpg","/images/portfolio/tinyrenderer/dragon-turntable-030.jpg","/images/portfolio/tinyrenderer/dragon-turntable-060.jpg","/images/portfolio/tinyrenderer/dragon-turntable-090.jpg","/images/portfolio/tinyrenderer/dragon-turntable-120.jpg","/images/portfolio/tinyrenderer/dragon-turntable-150.jpg","/images/portfolio/tinyrenderer/dragon-turntable-180.jpg","/images/portfolio/tinyrenderer/dragon-turntable-210.jpg","/images/portfolio/tinyrenderer/dragon-turntable-240.jpg","/images/portfolio/tinyrenderer/dragon-turntable-270.jpg","/images/portfolio/tinyrenderer/dragon-turntable-300.jpg","/images/portfolio/tinyrenderer/dragon-turntable-330.jpg"]' data-frame-labels='["Dragon 0°","Dragon 30°","Dragon 60°","Dragon 90°","Dragon 120°","Dragon 150°","Dragon 180°","Dragon 210°","Dragon 240°","Dragon 270°","Dragon 300°","Dragon 330°"]' data-angle-step="30">
+      <div class="project-turntable__stage">
+        <picture>
+          <source type="image/avif" srcset="/images/portfolio/tinyrenderer/dragon-turntable-000.avif" data-turntable-source-avif>
+          <source type="image/webp" srcset="/images/portfolio/tinyrenderer/dragon-turntable-000.webp" data-turntable-source>
+          <img data-turntable-image src="/images/portfolio/tinyrenderer/dragon-turntable-000.jpg" width="720" height="720" alt="Dragon 0° 的离线渲染结果" loading="lazy" decoding="async">
+        </picture>
+      </div>
+      <figcaption>
+        <h3>Dragon 角度转台</h3>
+        <p>拖动滑杆查看每隔 30° 输出的一帧；也可以聚焦滑杆后使用方向键逐帧切换。</p>
+        <div class="project-turntable__controls">
+          <label for="turntable-range-tinyrenderer">观察角度</label>
+          <input id="turntable-range-tinyrenderer" type="range" min="0" max="11" step="1" value="0" aria-label="切换 Dragon 模型的观察角度" data-turntable-range>
+          <output for="turntable-range-tinyrenderer" data-turntable-label aria-live="polite">0°</output>
+        </div>
+      </figcaption>
+      <noscript><p class="project-static-fallback">转台需要 JavaScript；上方保留 0° 的静态渲染帧。</p></noscript>
+    </figure>
+    
+
+    
+
+    
+    <div class="project-gallery">
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/assets/responsive/african-head-960.avif">
+          <source type="image/webp" srcset="/assets/responsive/african-head-960.webp">
+          <img src="/assets/african-head.png" width="656" height="675" alt="以蓝色线框绘制的 African head 模型" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>线框阶段</h3><p>读取 OBJ 面片后，先用直线算法验证模型拓扑与屏幕映射。</p></figcaption>
+      </figure>
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/assets/responsive/rgs2head-960.avif">
+          <source type="image/webp" srcset="/assets/responsive/rgs2head-960.webp">
+          <img src="/assets/rgs2head.png" width="652" height="646" alt="用随机颜色填充三角形的 African head 模型" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>三角形填充</h3><p>使用重心坐标判断像素是否位于三角形内；此阶段尚未处理遮挡。</p></figcaption>
+      </figure>
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/assets/responsive/gray_perfect-960.avif">
+          <source type="image/webp" srcset="/assets/responsive/gray_perfect-960.webp">
+          <img src="/assets/gray_perfect.png" width="595" height="599" alt="加入 Z-buffer 后正确处理遮挡的灰度模型" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>Z-buffer</h3><p>逐像素比较深度后，错误遮挡伪影得到修正。</p></figcaption>
+      </figure>
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/images/portfolio/tinyrenderer/textured-head.avif">
+          <source type="image/webp" srcset="/images/portfolio/tinyrenderer/textured-head.webp">
+          <img src="/images/portfolio/tinyrenderer/textured-head.jpg" width="720" height="720" alt="TinyRenderer 输出的带纹理 African head 模型" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>纹理人头</h3><p>对纹理坐标进行插值和采样，得到完整的纹理映射结果。</p></figcaption>
+      </figure>
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/images/portfolio/tinyrenderer/buddha-study.avif">
+          <source type="image/webp" srcset="/images/portfolio/tinyrenderer/buddha-study.webp">
+          <img src="/images/portfolio/tinyrenderer/buddha-study.jpg" width="800" height="800" alt="TinyRenderer 离线渲染的 Buddha 模型" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>更多 OBJ 模型</h3><p>使用同一条 CPU 管线加载并渲染另一份 OBJ 模型。</p></figcaption>
+      </figure>
+      
+    </div>
+    
+  </section>
+
+  <section class="project-section" aria-labelledby="project-highlights-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Implementation</p><h2 id="project-highlights-title">实现亮点</h2></div>
+    </div>
+    <div class="project-highlight-grid">
+      
+      <article><h3>从模型到屏幕</h3><p>解析 OBJ 数据，依次应用 Model、View、Projection 与 viewport 变换，并在齐次空间执行近裁剪。</p></article>
+      
+      <article><h3>光栅化与可见性</h3><p>用重心坐标遍历三角形覆盖像素，通过 Z-buffer 保留离相机更近的片元。</p></article>
+      
+      <article><h3>插值与着色</h3><p>使用 1/w 进行透视正确属性插值，完成纹理采样与 Blinn–Phong 光照计算。</p></article>
+      
+    </div>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-boundaries-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Current Scope</p><h2 id="project-boundaries-title">当前范围</h2></div>
+    </div>
+    <ul class="project-boundaries">
+      <li>当前使用固定视图矩阵（View 为单位矩阵），相机位置不提供交互式控制。</li><li>目前只实现近裁剪，没有实现完整的六平面视锥裁剪。</li><li>当前采用离线 BMP 输出，不提供实时窗口、自由相机或实时预览。</li><li>项目没有记录统一硬件与参数下的 benchmark，因此页面不展示性能数据。</li>
+    </ul>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-links-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Sources & Notes</p><h2 id="project-links-title">参考与相关文章</h2></div>
+    </div>
+    <div class="project-links">
+      <div>
+        <h3>参考资料</h3>
+        <ul>
+          
+          <li><a href="https://github.com/ssloy/tinyrenderer" target="_blank" rel="noopener noreferrer">TinyRenderer 教程与源码 <span aria-hidden="true">↗</span></a><p>教学路线、算法讲解与示例实现的主要参考。</p></li>
+          
+          <li><a href="https://github.com/ssloy/tinyrenderer/tree/master/obj" target="_blank" rel="noopener noreferrer">TinyRenderer 示例模型与纹理 <span aria-hidden="true">↗</span></a><p>African head 阶段图使用教程仓库提供的示例素材；当前项目未记录 Dragon 文件的原始下载来源，因此不作额外归属声明。</p></li>
+          
+        </ul>
+      </div>
+      <div>
+        <h3>相关文章</h3>
+        
+        <ul>
+          <li><a href="/2025/08/08/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%80%EF%BC%89-Bresenham%E2%80%99s-Line-Drawing-Algorithm/">软光栅渲染器（一） Bresenham’s Line Drawing Algorithm <span aria-hidden="true">↗</span></a></li><li><a href="/2025/08/09/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%BA%8C%EF%BC%89-Triangle-rasterization/">软光栅渲染器（二） Triangle rasterization <span aria-hidden="true">↗</span></a></li><li><a href="/2025/08/11/%E8%BD%AF%E5%85%89%E6%A0%85%E6%B8%B2%E6%9F%93%E5%99%A8%EF%BC%88%E4%B8%89%EF%BC%89-Hidden-faces-removal-z-buffer/">软光栅渲染器（三） Hidden faces removal (z buffer) <span aria-hidden="true">↗</span></a></li>
+        </ul>
+        
+      </div>
+    </div>
+  </section>
+
+  <footer class="project-detail__footer">
+    <a class="text-link" href="/portfolio/">← 返回作品集</a>
+  </footer>
+</article>
+
+</main>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>路人乙の小窝 · 2026</p>
+      <p><a href="/atom.xml">RSS</a> · <a href="/archives/">时间归档</a></p>
+    </div>
+  </footer>
+  <script src="/js/main.js" defer></script>
+  
+  <script src="/js/portfolio.js" defer></script>
+  
+  
+  
+</body>
+</html>

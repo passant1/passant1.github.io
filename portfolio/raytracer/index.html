@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  
+  
+  <title>Ray Tracer · CPU 离线路径追踪器 · 路人乙の小窝</title>
+  <meta name="description" content="基于经典教程路线完成的 C++17 CPU 路径追踪器，展示 10 spp 与 100 spp 的真实渲染对比。">
+  <meta name="theme-color" content="#F7F4F2">
+  <link rel="canonical" href="https://www.passant1.top/portfolio/raytracer/index.html">
+  <link rel="alternate" type="application/atom+xml" title="路人乙の小窝" href="https://www.passant1.top/atom.xml">
+  <link rel="icon" href="/images/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/style.css">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ray Tracer · CPU 离线路径追踪器 · 路人乙の小窝">
+  <meta property="og:description" content="基于经典教程路线完成的 C++17 CPU 路径追踪器，展示 10 spp 与 100 spp 的真实渲染对比。">
+  <meta property="og:url" content="https://www.passant1.top/portfolio/raytracer/index.html">
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body class="page-portfolio-detail">
+  <a class="skip-link" href="#main-content">跳到正文</a>
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a class="site-name" href="/" aria-label="路人乙首页">路人乙の小窝</a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span><span class="sr-only">打开导航</span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="主导航">
+        
+          
+          <a href="/">首页</a>
+        
+          
+          <a href="/blog/">博客</a>
+        
+          
+          <a href="/archives/">归档</a>
+        
+          
+          <a href="/about/">关于</a>
+        
+      </nav>
+    </div>
+  </header>
+  <main id="main-content">
+
+
+
+<article class="page-shell portfolio-shell project-shell project-detail" data-portfolio-project="raytracer">
+  <nav class="project-breadcrumb" aria-label="面包屑">
+    <a href="/">首页</a>
+    <span aria-hidden="true">/</span>
+    <a href="/portfolio/">作品集</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Ray Tracer · CPU 离线路径追踪器</span>
+  </nav>
+
+  <header class="project-hero">
+    <div class="project-hero__copy">
+      <p class="section-kicker">Path Tracer</p>
+      <h1>Ray Tracer · CPU 离线路径追踪器</h1>
+      <p class="project-summary">一个基于经典教程路线完成的 C++17 CPU 路径追踪器，实现随机采样、递归反弹、Lambertian、金属（metal）与介质（dielectric）材质、景深、运动模糊、纹理、AABB 与 BVH。</p>
+      <ul class="portfolio-card__tags project-tags" aria-label="项目技术标签">
+        <li>C++17</li><li>Path Tracing</li><li>Monte Carlo</li><li>BVH</li>
+      </ul>
+      <dl class="project-facts">
+        
+        <div><dt>语言</dt><dd>C++17</dd></div>
+        
+        <div><dt>渲染方式</dt><dd>CPU 离线路径追踪</dd></div>
+        
+        <div><dt>输出</dt><dd>PPM 图像</dd></div>
+        
+      </dl>
+    </div>
+    <picture class="project-hero__media">
+      <source type="image/avif" srcset="/images/portfolio/raytracer/random-spheres-100spp.avif">
+      <source type="image/webp" srcset="/images/portfolio/raytracer/random-spheres-100spp.webp">
+      <img src="/images/portfolio/raytracer/random-spheres-100spp.jpg" width="1600" height="800" alt="Ray Tracer 以 100 spp 输出的随机球场景" fetchpriority="high" decoding="async">
+    </picture>
+  </header>
+
+  <section class="project-section" aria-labelledby="project-overview-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Overview</p><h2 id="project-overview-title">项目简介</h2></div>
+    </div>
+    <div class="project-section__copy">
+      <p>这个项目跟随《Ray Tracing in One Weekend》与《Ray Tracing: The Next Week》的路线，围绕光线与场景求交、材质散射、随机采样和递归反弹搭建一个小型 CPU 路径追踪器。</p><p>页面展示的是项目实际生成的离线图像。10 spp 与 100 spp 使用同类随机球场景，用来直观看采样数增加后的噪声变化；这里不将教程中的方法描述为原创算法。</p>
+    </div>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-showcase-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Results</p><h2 id="project-showcase-title">真实结果展示</h2></div>
+    </div>
+
+    
+
+    
+    <figure class="project-compare" data-image-compare data-base-label="10 spp" data-overlay-label="100 spp">
+      <div class="project-compare__stage">
+        <picture class="project-compare__base">
+          <source type="image/avif" srcset="/images/portfolio/raytracer/random-spheres-10spp.avif">
+          <source type="image/webp" srcset="/images/portfolio/raytracer/random-spheres-10spp.webp">
+          <img src="/images/portfolio/raytracer/random-spheres-10spp.jpg" width="1600" height="800" alt="10 spp 随机球路径追踪结果" loading="lazy" decoding="async">
+        </picture>
+        <div class="project-compare__overlay" data-compare-overlay style="clip-path: inset(0 50% 0 0);" aria-hidden="true">
+          <picture>
+            <source type="image/avif" srcset="/images/portfolio/raytracer/random-spheres-100spp.avif">
+            <source type="image/webp" srcset="/images/portfolio/raytracer/random-spheres-100spp.webp">
+            <img src="/images/portfolio/raytracer/random-spheres-100spp.jpg" width="1600" height="800" alt="" loading="lazy" decoding="async">
+          </picture>
+        </div>
+        <span class="project-compare__badge project-compare__badge--after">100 spp</span>
+        <span class="project-compare__badge project-compare__badge--before">10 spp</span>
+      </div>
+      <figcaption>
+        <h3>10 spp / 100 spp 采样对比</h3>
+        <p>拖动滑杆改变分界线，观察相同分辨率下采样数增加后的噪声收敛。</p>
+        <div class="project-compare__controls">
+          <label for="compare-range-raytracer">图像分界位置</label>
+          <input id="compare-range-raytracer" type="range" min="0" max="100" step="1" value="50" aria-label="调整 100 spp 图像的显示范围" data-compare-range>
+          <output for="compare-range-raytracer" data-compare-label aria-live="polite">100 spp 显示范围 50%</output>
+        </div>
+      </figcaption>
+      <noscript><p class="project-static-fallback">对比滑杆需要 JavaScript；上方保留左右各一半的静态对比。</p></noscript>
+    </figure>
+    
+
+    
+    <div class="project-gallery">
+      
+      <figure>
+        <picture>
+          <source type="image/avif" srcset="/images/portfolio/raytracer/checker-scene.avif">
+          <source type="image/webp" srcset="/images/portfolio/raytracer/checker-scene.webp">
+          <img src="/images/portfolio/raytracer/checker-scene.jpg" width="400" height="225" alt="使用程序化棋盘格纹理的双球路径追踪场景" loading="lazy" decoding="async">
+        </picture>
+        <figcaption><h3>棋盘格纹理</h3><p>用程序化棋盘格纹理验证纹理坐标与材质采样流程。</p></figcaption>
+      </figure>
+      
+    </div>
+    
+  </section>
+
+  <section class="project-section" aria-labelledby="project-highlights-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Implementation</p><h2 id="project-highlights-title">实现亮点</h2></div>
+    </div>
+    <div class="project-highlight-grid">
+      
+      <article><h3>随机采样与递归反弹</h3><p>对像素进行多次随机采样，并递归追踪散射光线，以有限反弹深度累积颜色。</p></article>
+      
+      <article><h3>材质与相机效果</h3><p>实现 Lambertian、metal、dielectric 三类材质，并加入景深与带时间采样的运动模糊。</p></article>
+      
+      <article><h3>包围盒与 BVH</h3><p>使用 AABB 表示层次包围范围，再用 BVH 组织场景物体以减少不必要的求交测试。</p></article>
+      
+    </div>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-boundaries-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Current Scope</p><h2 id="project-boundaries-title">当前范围</h2></div>
+    </div>
+    <ul class="project-boundaries">
+      <li>当前以球体场景和教程中的基础材质为主，不是通用生产级渲染器。</li><li>渲染结果离线写入 PPM 文本图像，不提供实时预览或交互式场景编辑。</li><li>构建配置虽然能够发现并链接 OpenMP，但源码没有并行循环，页面不将其宣传为加速成果。</li><li>项目没有记录统一硬件与参数下的 benchmark，因此页面不展示性能数据。</li>
+    </ul>
+  </section>
+
+  <section class="project-section" aria-labelledby="project-links-title">
+    <div class="section-heading">
+      <div><p class="section-kicker">Sources & Notes</p><h2 id="project-links-title">参考与相关文章</h2></div>
+    </div>
+    <div class="project-links">
+      <div>
+        <h3>参考资料</h3>
+        <ul>
+          
+          <li><a href="https://raytracing.github.io/books/RayTracingInOneWeekend.html" target="_blank" rel="noopener noreferrer">Ray Tracing in One Weekend <span aria-hidden="true">↗</span></a><p>基础路径追踪、材质、相机与景深实现的主要参考。</p></li>
+          
+          <li><a href="https://raytracing.github.io/books/RayTracingTheNextWeek.html" target="_blank" rel="noopener noreferrer">Ray Tracing: The Next Week <span aria-hidden="true">↗</span></a><p>运动模糊、纹理、AABB 与 BVH 等扩展内容的主要参考。</p></li>
+          
+        </ul>
+      </div>
+      <div>
+        <h3>相关文章</h3>
+        
+        <p>这个项目目前还没有单独整理成博客文章，先保留项目页与上面的官方参考资料。</p>
+        
+      </div>
+    </div>
+  </section>
+
+  <footer class="project-detail__footer">
+    <a class="text-link" href="/portfolio/">← 返回作品集</a>
+  </footer>
+</article>
+
+</main>
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+      <p>路人乙の小窝 · 2026</p>
+      <p><a href="/atom.xml">RSS</a> · <a href="/archives/">时间归档</a></p>
+    </div>
+  </footer>
+  <script src="/js/main.js" defer></script>
+  
+  <script src="/js/portfolio.js" defer></script>
+  
+  
+  
+</body>
+</html>
